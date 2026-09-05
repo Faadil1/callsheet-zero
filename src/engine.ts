@@ -1,16 +1,9 @@
-import {
-  Agent,
-  RuntimeState,
-  SemanticEvent,
+import type {
+  InferenceInput,
+  ModelMessageItem,
   SituationContext,
   SituationHandler,
   SituationProcessor,
-  SituationSpecification,
-  createAgent,
-  createHuman,
-  defineRuntime,
-  type InferenceInput,
-  type ModelMessageItem,
 } from "@mozaik-ai/core"
 import { proposalFormat } from "./schema.js"
 
@@ -80,6 +73,14 @@ export interface ScenarioResult {
 
 const MAX_OUTPUT_TOKENS = 1024
 
+// Vercel's TypeScript function bundler can select @mozaik-ai/core's CommonJS
+// entrypoint. Mozaik 4.0.5's CJS build then require()s the ESM-only cloud SDK,
+// which Node rejects. Keep the dynamic import native so the serverless runtime
+// loads Mozaik's published ESM entrypoint instead of the CJS build.
+const nativeImport = new Function("specifier", "return import(specifier)") as (
+  specifier: string,
+) => Promise<typeof import("@mozaik-ai/core")>
+
 const scenario: Scenario = {
   title: "Rain + lead actor delay",
   shocks: ["Exterior location hit by rain", "Lead actor delayed by 90 minutes"],
@@ -106,21 +107,6 @@ const scenario: Scenario = {
       resources: ["lead_actor", "camera_a"],
     },
   ],
-}
-
-class CallsheetState extends RuntimeState {
-  proposals = new Map<AgentRole, Proposal>()
-  timeline: TimelineItem[] = []
-  conflicts: Conflict[] = []
-  status: "running" | "repairing" | "complete" = "running"
-  repairRequested = false
-  fallbackUsed = false
-  inferenceStarts = new Map<string, string>()
-  inferenceCompletions = new Map<string, string>()
-
-  constructor(public readonly scenario: Scenario) {
-    super()
-  }
 }
 
 function now(): string {
@@ -349,6 +335,32 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
       model,
       "No matching model credential detected; returning the deterministic UI/demo preview. The live path uses the same conflict logic with real Mozaik agents.",
     )
+  }
+
+  const mozaik = await nativeImport("@mozaik-ai/core/dist/index.mjs")
+  const {
+    Agent,
+    RuntimeState,
+    SemanticEvent,
+    SituationSpecification,
+    createAgent,
+    createHuman,
+    defineRuntime,
+  } = mozaik
+
+  class CallsheetState extends RuntimeState {
+    proposals = new Map<AgentRole, Proposal>()
+    timeline: TimelineItem[] = []
+    conflicts: Conflict[] = []
+    status: "running" | "repairing" | "complete" = "running"
+    repairRequested = false
+    fallbackUsed = false
+    inferenceStarts = new Map<string, string>()
+    inferenceCompletions = new Map<string, string>()
+
+    constructor(public readonly scenario: Scenario) {
+      super()
+    }
   }
 
   const { initializeRuntime, resolveParticipant, join, sendMessage, sendEvent, runLoop } = defineRuntime<CallsheetState>()
