@@ -7,6 +7,7 @@
     "dev": "tsx scripts/local-server.ts",
     "demo": "tsx scripts/demo.ts",
     "env:check": "tsx scripts/check-env.ts",
+    "schema:check": "tsx scripts/check-schema.ts",
     "typecheck": "tsc --noEmit"
   },
   "engines": {
