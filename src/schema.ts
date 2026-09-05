@@ -1,5 +1,9 @@
 import type { StructuredOutputFormat } from "@mozaik-ai/core"
 
+// Keep this schema inside Anthropic's currently accepted structured-output subset.
+// Numeric bounds and array cardinality constraints are enforced by the runtime/prompt,
+// not by JSON Schema keywords such as minimum/maximum/minItems, which can be rejected
+// by Anthropic's output_config.format.schema validation.
 export const proposalFormat: StructuredOutputFormat = {
   name: "callsheet_repair_proposal",
   strict: true,
@@ -14,8 +18,7 @@ export const proposalFormat: StructuredOutputFormat = {
       },
       version: {
         type: "integer",
-        minimum: 1,
-        maximum: 2,
+        enum: [1, 2],
         description: "1 for the initial proposal, 2 for a repair after a conflict."
       },
       sceneId: {
@@ -32,8 +35,7 @@ export const proposalFormat: StructuredOutputFormat = {
       },
       durationMinutes: {
         type: "integer",
-        minimum: 15,
-        maximum: 240
+        description: "Duration in minutes. Use a practical production duration between 15 and 240 minutes."
       },
       location: {
         type: "string"
@@ -41,13 +43,11 @@ export const proposalFormat: StructuredOutputFormat = {
       resources: {
         type: "array",
         items: { type: "string" },
-        minItems: 1,
-        description: "Scarce resources required by the proposal, such as lead_actor or van_1."
+        description: "One or more scarce resources required by the proposal, such as lead_actor or van_1."
       },
       confidence: {
         type: "number",
-        minimum: 0,
-        maximum: 1
+        description: "Confidence score between 0 and 1."
       },
       rationale: {
         type: "string",
