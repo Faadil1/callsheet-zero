@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx scripts/local-server.ts",
     "demo": "tsx scripts/demo.ts",
+    "env:check": "tsx scripts/check-env.ts",
     "typecheck": "tsc --noEmit"
   },
   "engines": {
