@@ -1,5 +1,3 @@
-import { runCallsheetScenario } from "../src/engine.js"
-
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST" && req.method !== "GET") {
     res.statusCode = 405
@@ -8,6 +6,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    const { runCallsheetScenario } = await import("../src/engine.js")
     const forceSimulation = req.query?.mode === "simulation" || req.body?.mode === "simulation"
     const result = await runCallsheetScenario({ forceSimulation })
     res.setHeader("Content-Type", "application/json")
@@ -18,6 +17,7 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({
       error: "run_failed",
       message: error instanceof Error ? error.message : String(error),
+      phase: "runtime_import_or_execution",
     })
   }
 }
