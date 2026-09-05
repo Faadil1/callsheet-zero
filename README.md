@@ -14,16 +14,32 @@ The demo is deliberately small and inspectable:
 2. **Schedule**, **Talent**, and **Logistics** agents all react to the same `message.sent` event.
 3. Mozaik starts their `runLoop()` calls fire-and-forget; semantic events expose the real overlap.
 4. Each agent produces a structured local repair proposal.
-5. The deterministic **Constraint Guard** finds overlapping claims on `lead_actor`, `camera_b`, or `van_1`.
+5. The deterministic **Constraint Guard** finds overlapping claims on `lead_actor`, `camera_a`, and `van_1`.
 6. It publishes `repair.requested` to the Schedule Agent.
 7. The Schedule Agent runs a second loop against the updated shared state.
 8. A conflict-free plan is committed.
+
+## Verified live run
+
+A live Anthropic run with `claude-sonnet-4-6` completed successfully on 2026-09-05.
+
+- `mode: live`
+- `status: complete`
+- Three initial agents started inference before any initial inference completed.
+- Three real shared-resource conflicts were detected.
+- The Constraint Guard emitted an event-driven repair request.
+- The Schedule Agent produced version 2 at 18:00.
+- The final call sheet was conflict-free without the deterministic fallback.
+
+The measured three-way overlap window was approximately **8.432 seconds**.
+
+See [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md) for the timestamps, Mozaik Cloud loop receipts, conflict list, repair event, and final invariant proof.
 
 ## Why this is genuinely concurrent
 
 This is not a sequential planner → executor → reviewer workflow and not a `Promise.all()` wrapper around unrelated tasks. The three participants are joined to one Mozaik runtime and react independently to the same semantic event. The UI reports the `inference.started` and `inference.completed` timestamps emitted by Mozaik. A run earns **PROVED** when all three initial inference loops start before the first one completes.
 
-Mozaik Cloud can independently display every agent, loop, inference step, tool call, live state and timeline when `MOZAIK_API_KEY` is configured.
+Mozaik Cloud independently records every agent loop and runtime event when `MOZAIK_API_KEY` is configured.
 
 ## Architecture
 
@@ -51,11 +67,21 @@ Production Controller
 ```bash
 npm install
 cp .env.example .env
-# add one provider key, e.g. OPENAI_API_KEY
-npm run dev
+# configure ANTHROPIC_API_KEY and MOZAIK_API_KEY
+npm run env:check
+npm run schema:check
+npm run demo
 ```
 
-Open `http://localhost:3000`.
+Recommended live configuration:
+
+```env
+ANTHROPIC_API_KEY=...
+MOZAIK_MODEL=claude-sonnet-4-6
+MOZAIK_API_KEY=...
+```
+
+Open `http://localhost:3000` after `npm run dev` to use the product UI.
 
 Without a matching model provider credential, the endpoint intentionally returns a clearly labeled **SIMULATION** preview so the product UI remains reviewable. It does **not** claim that preview as live concurrency proof.
 
@@ -84,25 +110,27 @@ With `@mozaik-ai/core` 4.x, runtime events flow to Mozaik Cloud automatically.
 
 | Variable | Purpose |
 | --- | --- |
-| `OPENAI_API_KEY` | Default provider credential for `gpt-5.4` |
-| `MOZAIK_MODEL` | Optional model override |
-| `ANTHROPIC_API_KEY` | Used when `MOZAIK_MODEL` starts with `claude` |
-| `GEMINI_API_KEY` | Used when `MOZAIK_MODEL` starts with `gemini` |
-| `MOZAIK_API_KEY` | Optional Mozaik Cloud observability |
+| `ANTHROPIC_API_KEY` | Recommended live provider credential |
+| `MOZAIK_MODEL` | Model override; verified with `claude-sonnet-4-6` |
+| `OPENAI_API_KEY` | Optional OpenAI provider credential |
+| `GEMINI_API_KEY` | Optional Gemini provider credential |
+| `MOZAIK_API_KEY` | Mozaik Cloud observability |
 
 ## Submission checklist
 
 - [x] `@mozaik-ai/core` is a direct runtime dependency
-- [x] Three AI agents can run concurrently
+- [x] Three AI agents run concurrently
 - [x] Shared runtime state is explicit
 - [x] Concurrency receipts are surfaced in-product
 - [x] Deterministic constraints are separate from LLM judgment
 - [x] Event-driven repair exists
-- [ ] Live provider key configured
-- [ ] Mozaik Cloud paired
+- [x] Live provider key configured and validated locally
+- [x] Mozaik Cloud paired and receiving live loops
+- [x] Genuine three-agent concurrency proved from runtime timestamps
+- [x] Live conflict → repair → conflict-free commit proved
 - [x] Public GitHub repository
 - [ ] Live deployment
 - [ ] Short demo video
 - [ ] Hackathon submission
 
-See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), and [`docs/STATE.md`](./docs/STATE.md).
+See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md), and [`docs/STATE.md`](./docs/STATE.md).
