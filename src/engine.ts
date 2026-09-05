@@ -78,6 +78,8 @@ export interface ScenarioResult {
   note?: string
 }
 
+const MAX_OUTPUT_TOKENS = 1024
+
 const scenario: Scenario = {
   title: "Rain + lead actor delay",
   shocks: ["Exterior location hit by rain", "Lead actor delayed by 90 minutes"],
@@ -217,6 +219,7 @@ function deterministicProposal(role: AgentRole, version: 1 | 2): Proposal {
           fallback: true,
         }
   }
+
   if (role === "talent") {
     return {
       agentRole: "talent",
@@ -232,6 +235,7 @@ function deterministicProposal(role: AgentRole, version: 1 | 2): Proposal {
       fallback: true,
     }
   }
+
   return {
     agentRole: "logistics",
     version,
@@ -261,12 +265,14 @@ ROLE: Schedule Agent. Optimize scene order and throughput.
 For the first proposal, your strongest local preference is S22 at 16:30 on Stage B, using lead_actor, camera_a, and van_1.
 If you receive a repair request because that collides with peers, produce version 2 and move S22 to 18:00 unless the repair message gives a better conflict-free option.`
   }
+
   if (role === "talent") {
     return `${shared}
 ROLE: Talent Agent. Optimize cast availability and continuity.
 For the first proposal, your strongest local preference is S14 at 16:30 on Stage A, using lead_actor and camera_a.
 On repair, preserve cast feasibility while avoiding every conflict named in the repair request.`
   }
+
   return `${shared}
 ROLE: Logistics Agent. Optimize locations, transport, and equipment.
 For the first proposal, your strongest local preference is S18 at 16:30 in the Warehouse, using support_cast, camera_b, and van_1.
@@ -295,6 +301,7 @@ function simulationResult(model: string, note: string): ScenarioResult {
   const conflicts = findConflicts(initial)
   const repaired = deterministicProposal("schedule", 2)
   const finalPlan = [repaired, p2, p3]
+
   return {
     mode: "simulation",
     status: "complete",
@@ -338,11 +345,13 @@ function simulationResult(model: string, note: string): ScenarioResult {
 export async function runCallsheetScenario(options: { forceSimulation?: boolean } = {}): Promise<ScenarioResult> {
   const model = process.env.MOZAIK_MODEL || "gpt-5.4"
   if (options.forceSimulation || !hasCredentialFor(model)) {
-    return simulationResult(model, "No matching model credential detected; returning the deterministic UI/demo preview. The live path uses the same conflict logic with real Mozaik agents.")
+    return simulationResult(
+      model,
+      "No matching model credential detected; returning the deterministic UI/demo preview. The live path uses the same conflict logic with real Mozaik agents.",
+    )
   }
 
-  const { initializeRuntime, resolveRuntime, resolveParticipant, join, sendMessage, sendEvent, runLoop } =
-    defineRuntime<CallsheetState>()
+  const { initializeRuntime, resolveParticipant, join, sendMessage, sendEvent, runLoop } = defineRuntime<CallsheetState>()
 
   const state = new CallsheetState(scenario)
   initializeRuntime({ state })
@@ -367,6 +376,7 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
       const { message } = event.payload as { message: string }
       const inferenceInput: InferenceInput = {
         model,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
         context: participant.getMemory().getContext(),
         tools: participant.getTools(),
         structuredOutput: proposalFormat,
@@ -381,6 +391,7 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
       const payload = event.payload as { message: string }
       const inferenceInput: InferenceInput = {
         model,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
         context: participant.getMemory().getContext(),
         tools: participant.getTools(),
         structuredOutput: proposalFormat,
@@ -493,8 +504,15 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
           .map((c) => `- ${c.resource}: ${c.leftRole} vs ${c.rightRole} at ${c.overlap}`)
           .join("\n")}\n\nThe current shared state now contains all three proposals. Produce version 2 that removes every named conflict. Prefer S22 at 18:00 on Stage B if feasible. Return the required structured proposal.`
 
-        state.timeline.push({ at: now(), kind: "repair.requested", label: "Constraint Guard requested an event-driven repair from Schedule Agent" })
-        sendEvent(SemanticEvent.create("repair.requested", guard.getId(), { targetAgentId: scheduleAgent.getId(), message }), guard.getId())
+        state.timeline.push({
+          at: now(),
+          kind: "repair.requested",
+          label: "Constraint Guard requested an event-driven repair from Schedule Agent",
+        })
+        sendEvent(
+          SemanticEvent.create("repair.requested", guard.getId(), { targetAgentId: scheduleAgent.getId(), message }),
+          guard.getId(),
+        )
         return
       }
 
@@ -512,9 +530,12 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
         fallback.producerName = "Constraint Guard fallback"
         state.proposals.set("schedule", fallback)
         state.fallbackUsed = true
-        state.conflicts = repairedConflicts
         state.status = "complete"
-        state.timeline.push({ at: now(), kind: "guard.fallback", label: "Repair still conflicted; deterministic invariant guard applied the safe 18:00 slot" })
+        state.timeline.push({
+          at: now(),
+          kind: "guard.fallback",
+          label: "Repair still conflicted; deterministic invariant guard applied the safe 18:00 slot",
+        })
         state.timeline.push({ at: now(), kind: "commit", label: "Constraint Guard committed a conflict-free fallback" })
       }
     }
@@ -539,7 +560,11 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
   for (const agent of agents) join(agent)
   join(guard)
 
-  state.timeline.push({ at: now(), kind: "run", label: "Disruption injected; three independent agents are now eligible to react" })
+  state.timeline.push({
+    at: now(),
+    kind: "run",
+    label: "Disruption injected; three independent agents are now eligible to react",
+  })
   sendMessage(initialMessage(), user.getId())
 
   const timeoutMs = 50_000
@@ -549,7 +574,10 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
   }
 
   if (state.status !== "complete") {
-    const fallback = simulationResult(model, "Live Mozaik run did not complete inside the API timeout; UI returned the deterministic preview instead.")
+    const fallback = simulationResult(
+      model,
+      "Live Mozaik run did not complete inside the API timeout; UI returned the deterministic preview instead.",
+    )
     fallback.status = "timeout"
     fallback.timeline = [...state.timeline, ...fallback.timeline]
     return fallback
@@ -579,6 +607,8 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
         : "The run completed, but the captured timestamps did not prove a full three-way overlap; inspect Mozaik Cloud for the exact timeline.",
     },
     finalPlan: [...state.proposals.values()],
-    note: state.fallbackUsed ? "The deterministic guard had to apply its safe fallback after the AI repair remained conflicting." : undefined,
+    note: state.fallbackUsed
+      ? "The deterministic guard had to apply its safe fallback after the AI repair remained conflicting."
+      : undefined,
   }
 }
