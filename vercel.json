@@ -3,7 +3,7 @@
   "functions": {
     "api/run.ts": {
       "maxDuration": 60,
-      "includeFiles": "{node_modules/@mozaik-ai/core/dist/**,node_modules/@mozaik-ai/cloud-sdk/**,node_modules/@anthropic-ai/sdk/**,node_modules/zod/**,node_modules/dotenv/**}"
+      "includeFiles": "{node_modules/@mozaik-ai/core/dist/**,node_modules/@mozaik-ai/cloud-sdk/**,node_modules/@anthropic-ai/sdk/**,node_modules/@google/genai/**,node_modules/@modelcontextprotocol/sdk/**,node_modules/openai/**,node_modules/zod/**,node_modules/dotenv/**}"
     }
   }
 }
