@@ -8,7 +8,7 @@ Purpose: durable resume point for a new conversation or agent.
 1. `docs/STATE.md` — canonical project state.
 2. `docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md` — frozen design rework contract.
 3. `docs/TRACE_GATE_6_5_REFERENCE_AUDIT.md` — reference transfer record.
-4. `docs/COMPETITIVE_SIGNAL_2026-09-06.md` — latest bounded submission/competitor signal.
+4. `docs/COMPETITIVE_SIGNAL_2026-09-06.md` — latest bounded submission/competitor/ecosystem signal.
 5. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
 6. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
 7. `docs/WINNER_INTELLIGENCE_G4A.md` — pre-submission judge-path audit.
@@ -36,6 +36,22 @@ SUBMIT THROUGH OFFICIAL SITE/FORM
 Do not treat a Discord channel post as a proven submission requirement. Discord remains useful for support, so complete server onboarding before final submission if posting is still gated.
 
 Post-submission QA is mandatory because another participant reported a case where a successful form/API submission appeared in the gallery list but the detail route returned 404. After submitting, verify card + detail URL + repo/demo links and preserve the returned slug/confirmation.
+
+## Official Mozaik resources surfaced in Discord
+
+Canonical links from the official-links channel:
+
+```text
+WEBSITE = https://mozaik.jigjoy.ai/
+CLOUD = https://app.jigjoy.ai/
+DOCS = https://docs.jigjoy.ai/
+GITHUB = https://github.com/jigjoy-ai/mozaik
+LINKEDIN = https://www.linkedin.com/showcase/mozaik-runtime
+X = https://x.com/mozaik_runtime
+YOUTUBE = https://www.youtube.com/@jigjoy_ai
+```
+
+Use these only as reference/submission support surfaces; no new integration is required.
 
 ## Product truth already proved
 
@@ -88,6 +104,23 @@ The support reply did not separately itemize the exact credit sources, so do not
 
 If the UI still shows a different balance, first verify that local sign-in is using the same account support matched. Do not store the account email itself in this public repository.
 
+### Additional hackathon ecosystem offers — do not derail submission
+
+Discord surfaced two optional opportunities:
+
+- **Mem0 sponsor access:** every participant can request three months of free agent memory through the JigJoy claim form.
+- **Mozaik Cloud Founding Builder:** lifetime Mozaik Cloud access for a one-time **$50**, offer open until winners are announced on **September 13**.
+
+Current decisions:
+
+```text
+MEM0 = OPTIONAL_POST_SUBMISSION
+MEM0_INTEGRATION_NOW = NO
+MOZAIK_FOUNDING_BUILDER = DEFER_DECISION_UNTIL_AFTER_SUBMISSION
+```
+
+These are ecosystem opportunities, not reasons to reopen CALLSHEET ZERO or consume deadline time.
+
 ## Latest competitor intelligence
 
 Public gallery is live. Social likes/comments exist, but they are not treated as judging criteria without an explicit rule.
@@ -118,6 +151,16 @@ Protected differentiation versus OpsRoom/general workflow systems:
 A useful demo line if needed:
 
 > Three agents are enough to create the failure mode: concurrent local optima collide on shared production resources.
+
+### Late-stage tooling signal
+
+Another participant reported exhausting Codex usage while finishing and asked for Nebius-backed coding-agent alternatives. Treat this only as a field signal that many teams are in final polish/debug mode.
+
+CALLSHEET ZERO decision:
+
+```text
+NO LATE TOOL MIGRATION UNLESS A REAL BLOCKER APPEARS
+```
 
 Full record: `docs/COMPETITIVE_SIGNAL_2026-09-06.md`.
 
