@@ -3,52 +3,205 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#0a0d12" />
-  <title>CALLSHEET ZERO — Concurrent Constraint Repair</title>
+  <meta name="theme-color" content="#F2EFE7" />
+  <title>CALLSHEET ZERO — Production Revision Control</title>
   <style>
-    :root{--bg:#080a0e;--panel:#0f131a;--panel2:#131925;--line:#222a38;--text:#f4f6fb;--muted:#8c96a8;--blue:#78a6ff;--green:#72e0ac;--amber:#ffc96b;--red:#ff7a8a;--purple:#b69cff;--cyan:#69d9e8;--shadow:0 22px 70px rgba(0,0,0,.35)}
-    *{box-sizing:border-box} html{background:var(--bg)} body{margin:0;background:radial-gradient(circle at 80% -10%,rgba(77,116,216,.16),transparent 34%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
-    button{font:inherit}.shell{width:min(1240px,calc(100% - 34px));margin:0 auto;padding:28px 0 70px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:13px}.mark{width:38px;height:38px;border:1px solid #303a4d;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#111722,#080b10);font-weight:900;letter-spacing:-1px}.brand strong{font-size:14px;letter-spacing:.16em}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.badge{border:1px solid #26334a;border-radius:999px;padding:7px 11px;color:#9abaff;font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:#101725}
-    .judge-cue{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:30px;padding:13px 15px;border:1px solid #24334c;border-radius:14px;background:linear-gradient(90deg,rgba(120,166,255,.11),rgba(105,217,232,.04));box-shadow:0 10px 35px rgba(0,0,0,.18)}.judge-cue strong{font-size:13px;letter-spacing:.04em}.judge-cue span{color:#9aa9bf;font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.09em;text-align:right}
-    .hero{display:grid;grid-template-columns:1.25fr .75fr;gap:26px;align-items:end;margin-bottom:34px}.eyebrow{color:#8aaeff;font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em;text-transform:uppercase;margin-bottom:16px}.hero h1{font-size:clamp(43px,7vw,82px);line-height:.92;margin:0;letter-spacing:-.065em;max-width:790px}.hero h1 span{color:#7d8aa0}.hero p{margin:22px 0 0;color:#a7afbd;max-width:720px;font-size:16px;line-height:1.65}.hero-side{border-left:1px solid var(--line);padding-left:24px;color:#a3adbd;line-height:1.65;font-size:14px}.hero-side b{color:var(--text)}
-    .control{display:flex;justify-content:space-between;gap:20px;align-items:center;border:1px solid var(--line);background:rgba(15,19,26,.92);padding:18px;border-radius:18px;box-shadow:var(--shadow);position:sticky;top:12px;z-index:20;backdrop-filter:blur(16px);margin-bottom:10px}.shock{display:flex;align-items:center;gap:12px;min-width:0}.pulse{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 7px rgba(255,122,138,.1)}.shock-text b{font-size:13px}.shock-text span{display:block;color:var(--muted);font-size:12px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:9px;align-items:center}.run{border:0;border-radius:12px;padding:12px 18px;background:#eef3ff;color:#10131a;font-weight:800;cursor:pointer;min-width:180px}.run:disabled{opacity:.5;cursor:wait}.run .kbd{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#5f6879;margin-left:8px}.replay{border:1px solid #395072;border-radius:12px;padding:11px 15px;background:#101827;color:#bfd2f6;font-weight:800;cursor:pointer;white-space:nowrap}.replay:disabled{opacity:.5;cursor:wait}
-    .replay-note{display:flex;gap:8px;align-items:flex-start;margin:0 4px 10px;color:#76859b;font-size:11px;line-height:1.45}.replay-note b{color:#9bb7e4;font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid #2c4264;border-radius:999px;padding:3px 6px;white-space:nowrap}.statusline{min-height:20px;color:#8f9aab;font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;margin:0 4px 18px}.statusline.live{color:var(--green)}.statusline.replay-status{color:#9abaff}.statusline.error{color:var(--red)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:linear-gradient(180deg,rgba(18,23,31,.98),rgba(11,14,19,.98));border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:17px}.section-title h2{font-size:13px;text-transform:uppercase;letter-spacing:.14em;margin:0}.section-title span{font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
-    .before{grid-column:span 5}.world{grid-column:span 7}.agents{grid-column:span 12}.timeline-card{grid-column:span 7}.proof{grid-column:span 5}.final{grid-column:span 12}
-    .schedule{display:grid;gap:9px}.slot{display:grid;grid-template-columns:65px 1fr auto;gap:12px;align-items:center;padding:12px 12px;border:1px solid #202735;border-radius:12px;background:#0b0f15}.slot time{font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#c7d4e9}.slot b{font-size:13px}.slot small{display:block;color:var(--muted);margin-top:3px}.tag{font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid #293448;border-radius:999px;padding:5px 7px;color:#8ba7d2;white-space:nowrap}
-    .world-shocks{display:grid;grid-template-columns:1fr 1fr;gap:10px}.shock-card{padding:18px;border:1px solid #3b2730;border-radius:14px;background:linear-gradient(150deg,rgba(255,122,138,.10),rgba(255,122,138,.02))}.shock-card .icon{font-size:22px;margin-bottom:12px}.shock-card b{font-size:14px}.shock-card p{font-size:12px;color:#a8aab3;line-height:1.5;margin:7px 0 0}.thesis{margin-top:12px;padding:14px;border-radius:12px;background:#0b1017;border:1px dashed #263249;color:#9eabc0;font-size:12px;line-height:1.55}.thesis strong{color:#d9e4f7}
-    .agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.agent{border:1px solid #222a38;border-radius:14px;padding:16px;background:#0b0f15;position:relative;overflow:hidden}.agent::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:#27303d}.agent.running::after{background:linear-gradient(90deg,var(--cyan),var(--purple));animation:move 1.1s linear infinite;background-size:160% 100%}@keyframes move{to{background-position:160% 0}}.agent-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.agent-head b{font-size:13px}.agent-state{font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;color:#79879b;text-transform:uppercase}.agent.running .agent-state{color:var(--cyan)}.agent.done .agent-state{color:var(--green)}.agent p{font-size:12px;color:#8e99aa;line-height:1.5;min-height:53px}.proposal{font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#c5d2e5;border-top:1px solid #202734;padding-top:10px}.proposal em{font-style:normal;color:var(--amber)}
-    .timeline{display:flex;flex-direction:column;gap:0;max-height:430px;overflow:auto;padding-right:4px}.event{display:grid;grid-template-columns:70px 12px 1fr;gap:10px;position:relative;padding:8px 0}.event:not(:last-child)::after{content:"";position:absolute;left:75px;top:27px;bottom:-8px;width:1px;background:#27303b}.event time{font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#69778b;text-align:right;padding-top:2px}.dot{width:8px;height:8px;border-radius:50%;background:#526078;margin-top:4px;position:relative;z-index:1;box-shadow:0 0 0 4px #0e1218}.event.conflict .dot{background:var(--red)}.event.commit .dot{background:var(--green)}.event.started .dot{background:var(--cyan)}.event.repair .dot{background:var(--amber)}.event .event-text{font-size:12px;color:#aab3c2;line-height:1.42}.event .event-text strong{color:#e6eaf2;font-weight:650}
-    .proof-panel{display:grid;gap:12px}.metric{padding:14px;border:1px solid #202938;border-radius:13px;background:#0b0f15}.metric .label{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#78879c;text-transform:uppercase;letter-spacing:.08em}.metric .value{font-size:26px;font-weight:850;letter-spacing:-.04em;margin-top:6px}.metric .sub{color:#8793a4;font-size:11px;line-height:1.45;margin-top:4px}.metric.good .value{color:var(--green)}.metric.warn .value{color:var(--amber)}
-    .conflicts{display:grid;gap:8px}.conflict-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px;border:1px solid #3b2730;background:#171014;border-radius:12px}.conflict-row b{font-size:12px}.conflict-row small{display:block;color:#9b8b91;margin-top:3px}.conflict-row code{font-size:10px;color:#ff9cab;background:#25171d;padding:5px 7px;border-radius:8px}
-    .final-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.final-item{padding:16px;border-radius:14px;border:1px solid #243229;background:linear-gradient(160deg,rgba(114,224,172,.08),rgba(114,224,172,.01))}.final-item .role{font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;color:#72e0ac;text-transform:uppercase;letter-spacing:.1em}.final-item h3{font-size:17px;margin:8px 0 7px}.final-item p{font-size:12px;color:#93a399;line-height:1.55;margin:0}.final-item .resources{margin-top:12px;color:#708176;font:600 10px ui-monospace,SFMono-Regular,Menlo,monospace}
-    .empty{color:#657184;font-size:12px;padding:26px 4px;text-align:center;border:1px dashed #242d3b;border-radius:12px}.footer{display:flex;justify-content:space-between;gap:20px;margin-top:24px;color:#586478;font-size:11px}.footer strong{color:#8291aa}
-    @media(max-width:900px){.hero{grid-template-columns:1fr}.hero-side{border-left:0;border-top:1px solid var(--line);padding:18px 0 0}.before,.world,.timeline-card,.proof{grid-column:span 12}.agent-grid,.final-grid{grid-template-columns:1fr}.world-shocks{grid-template-columns:1fr}.control{position:static;align-items:flex-start}.actions{flex-direction:column;width:100%;max-width:240px}.run,.replay{width:100%;min-width:0}.judge-cue{align-items:flex-start;flex-direction:column}.judge-cue span{text-align:left}.hero h1{font-size:52px}}
+    :root{
+      --canvas:#F2EFE7;--surface:#FBFAF6;--surface2:#E8E4DA;--ink:#171816;--muted:#64665F;
+      --rule:#C9C4B8;--slate:#4B5D6B;--conflict:#A04438;--warning:#B27A27;--resolved:#2F6B4C;
+      --replay:#536A82;--paper-shadow:0 14px 38px rgba(36,34,29,.10)
+    }
+    *{box-sizing:border-box}
+    html{background:var(--canvas)}
+    body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+    button{font:inherit}
+    .shell{width:min(1280px,calc(100% - 30px));margin:0 auto;padding:18px 0 54px}
+    .sheet{background:var(--surface);border:1px solid var(--rule);box-shadow:var(--paper-shadow)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+    .doc-head{display:grid;grid-template-columns:1.2fr 1fr;border-bottom:2px solid var(--ink)}
+    .identity{padding:18px 20px;border-right:1px solid var(--rule)}
+    .identity .kicker{font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--slate);text-transform:uppercase}
+    .identity h1{font-size:clamp(30px,4vw,48px);line-height:.95;letter-spacing:-.04em;margin:7px 0 9px}
+    .identity p{margin:0;color:var(--muted);font-size:14px;line-height:1.45;max-width:680px}
+    .meta-grid{display:grid;grid-template-columns:repeat(2,1fr)}
+    .meta{padding:14px 16px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);min-height:68px}
+    .meta:nth-child(even){border-right:0}.meta:nth-last-child(-n+2){border-bottom:0}
+    .meta .label{display:block;font-size:12px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+    .meta strong{font-size:15px}.meta.warning strong{color:var(--warning)}.meta.conflict strong{color:var(--conflict)}
+
+    .ops-bar{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--rule);background:var(--surface2)}
+    .incident{display:flex;gap:12px;align-items:flex-start;min-width:0}.incident-mark{width:12px;height:12px;margin-top:4px;background:var(--conflict);border:1px solid #7f2f28;flex:0 0 auto}
+    .incident b{display:block;font-size:15px}.incident span{display:block;margin-top:3px;color:var(--muted);font-size:14px;line-height:1.35}
+    .actions{display:flex;gap:8px;align-items:center}.actions button{min-height:44px;padding:10px 14px;border-radius:6px;font-weight:800;cursor:pointer}
+    .run{background:var(--ink);color:var(--surface);border:1px solid var(--ink)}
+    .replay{background:var(--surface);color:var(--replay);border:1px solid var(--replay)}
+    .actions button:disabled{opacity:.48;cursor:wait}
+    .kbd{font-size:12px;font-weight:700;opacity:.7;margin-left:5px}
+
+    .evidence{padding:13px 20px 16px;border-bottom:2px solid var(--ink)}
+    .evidence-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
+    .evidence-head strong{font-size:13px;text-transform:uppercase;letter-spacing:.08em}.evidence-head span{font-size:12px;color:var(--replay)}
+    .evidence-strip{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--rule)}
+    .proof-step{padding:11px 12px;min-height:78px;border-right:1px solid var(--rule);background:var(--surface)}
+    .proof-step:last-child{border-right:0}.proof-step .n{display:block;font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);margin-bottom:5px}.proof-step b{display:block;font-size:15px;line-height:1.2}.proof-step small{display:block;margin-top:5px;color:var(--muted);font-size:13px;line-height:1.25}
+    .proof-step.conflict b{color:var(--conflict)}.proof-step.repair b{color:var(--warning)}.proof-step.commit b{color:var(--resolved)}
+    .proof-step.replay-active{outline:2px solid var(--replay);outline-offset:-2px;background:#f3f5f6}
+    .provenance{margin-top:8px;font-size:12px;line-height:1.35;color:var(--muted)}.provenance b{color:var(--replay)}
+
+    .statusline{padding:11px 20px;border-bottom:1px solid var(--rule);font:700 13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);background:#f7f5ee}
+    .statusline.live{color:var(--resolved)}.statusline.replay-status{color:var(--replay)}.statusline.error{color:var(--conflict)}
+
+    .main-grid{display:grid;grid-template-columns:repeat(12,1fr)}
+    .panel{padding:18px 20px;border-bottom:1px solid var(--rule);min-width:0}.panel.left{border-right:1px solid var(--rule)}
+    .before{grid-column:span 5}.shock-panel{grid-column:span 7}.agents{grid-column:span 12}.receipts{grid-column:span 7}.guard{grid-column:span 5}.final{grid-column:span 12;border-bottom:0}
+    .section-title{display:flex;justify-content:space-between;gap:14px;align-items:baseline;margin-bottom:13px}.section-title h2{font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin:0}.section-title span{font-size:12px;color:var(--muted)}
+
+    .revision-band{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 10px;border:1px solid var(--ink);margin-bottom:10px;background:#f6f2e8}
+    .revision-band strong{font-size:14px}.revision-band span{font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--slate)}
+    .schedule{border-top:1px solid var(--rule)}
+    .slot{display:grid;grid-template-columns:72px 74px 1fr 1.1fr;gap:10px;align-items:center;padding:10px 8px;border-bottom:1px solid var(--rule);font-size:14px}
+    .slot time,.slot .scene{font:750 13px ui-monospace,SFMono-Regular,Menlo,monospace}.slot small{font-size:13px;color:var(--muted)}.slot .resources{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--slate);overflow-wrap:anywhere}
+
+    .shock-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule)}
+    .shock-card{padding:13px 14px;min-height:96px}.shock-card+ .shock-card{border-left:1px solid var(--rule)}.shock-card .flag{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--conflict);margin-bottom:7px}.shock-card b{font-size:15px}.shock-card p{font-size:14px;color:var(--muted);line-height:1.4;margin:6px 0 0}
+    .thesis{margin-top:10px;padding:10px 11px;border-left:4px solid var(--slate);background:#f4f1e9;font-size:14px;line-height:1.45;color:var(--muted)}.thesis strong{color:var(--ink)}
+
+    .agent-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule)}
+    .agent{padding:13px 14px;min-height:142px;position:relative}.agent+.agent{border-left:1px solid var(--rule)}
+    .agent::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--rule)}
+    .agent.running::after{background:var(--slate);animation:work 1s steps(3,end) infinite}.agent.done::after{background:var(--resolved)}
+    @keyframes work{50%{opacity:.35}}
+    .agent-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.agent-head b{font-size:15px}.agent-state{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;color:var(--muted)}.agent.running .agent-state{color:var(--slate)}.agent.done .agent-state{color:var(--resolved)}
+    .agent p{font-size:14px;line-height:1.38;color:var(--muted);margin:10px 0 12px;min-height:39px}.proposal{border-top:1px solid var(--rule);padding-top:9px;font:650 13px/1.42 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink)}.proposal em{font-style:normal;color:var(--warning)}
+
+    .timeline{display:flex;flex-direction:column;max-height:395px;overflow:auto;border-top:1px solid var(--rule)}
+    .event{display:grid;grid-template-columns:96px 14px 1fr;gap:9px;padding:9px 4px;border-bottom:1px solid var(--rule)}.event time{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}.dot{width:9px;height:9px;margin-top:4px;background:var(--slate)}.event.conflict .dot{background:var(--conflict)}.event.repair .dot{background:var(--warning)}.event.commit .dot{background:var(--resolved)}.event-text{font-size:14px;line-height:1.35;color:var(--muted)}.event-text strong{color:var(--ink);font-size:13px}
+
+    .metric{padding:11px 12px;border:1px solid var(--rule);margin-bottom:10px}.metric .label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.metric .value{font-size:25px;font-weight:900;letter-spacing:-.03em;margin-top:4px}.metric .sub{font-size:13px;line-height:1.35;color:var(--muted);margin-top:3px}.metric.good .value{color:var(--resolved)}.metric.warn .value{color:var(--warning)}
+    .conflicts{display:grid;gap:8px}.conflict-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:10px 11px;border:1px solid #cfa59f;background:#faf1ef;align-items:center}.conflict-row .hold{display:block;font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--conflict);margin-bottom:3px}.conflict-row b{font-size:14px}.conflict-row small{display:block;color:var(--muted);font-size:13px;margin-top:3px}.conflict-row code{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--conflict);overflow-wrap:anywhere}.empty{color:var(--muted);font-size:14px;padding:15px 4px}
+
+    .final-wrap{display:grid;grid-template-columns:1fr 240px;gap:18px;align-items:stretch}.final-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule)}
+    .final-item{padding:13px 14px;min-height:132px}.final-item+.final-item{border-left:1px solid var(--rule)}.final-item .role{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--resolved);text-transform:uppercase}.final-item h3{font-size:20px;margin:7px 0 6px}.final-item p{font-size:14px;line-height:1.4;color:var(--muted);margin:0}.final-item .resources{margin-top:10px;font:650 12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--slate);overflow-wrap:anywhere}
+    .approval{border:2px solid var(--resolved);padding:15px;display:flex;flex-direction:column;justify-content:center;text-align:center;color:var(--resolved);background:#f3f7f3;min-height:132px}.approval .rev{font:900 14px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.approval strong{font-size:22px;line-height:1.05;margin:6px 0}.approval span{font-size:13px;font-weight:750}.approval.neutral{border-color:var(--rule);color:var(--muted);background:#f5f3ed}
+
+    .footer{display:flex;justify-content:space-between;gap:16px;padding:12px 20px;border-top:1px solid var(--rule);font-size:12px;color:var(--muted);background:var(--surface2)}.footer strong{color:var(--ink)}
+
+    @media(max-width:900px){
+      .shell{width:min(100% - 18px,760px);padding-top:9px}.doc-head{grid-template-columns:1fr}.identity{border-right:0;border-bottom:1px solid var(--rule)}
+      .ops-bar{grid-template-columns:1fr}.actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.evidence-strip{grid-template-columns:1fr}.proof-step{border-right:0;border-bottom:1px solid var(--rule);min-height:0}.proof-step:last-child{border-bottom:0}
+      .before,.shock-panel,.agents,.receipts,.guard,.final{grid-column:span 12}.panel.left{border-right:0}.before,.receipts{border-right:0}.agent-grid,.final-grid{grid-template-columns:1fr}.agent+.agent,.final-item+.final-item{border-left:0;border-top:1px solid var(--rule)}
+      .shock-grid{grid-template-columns:1fr}.shock-card+.shock-card{border-left:0;border-top:1px solid var(--rule)}.final-wrap{grid-template-columns:1fr}.slot{grid-template-columns:60px 60px 1fr}.slot .resources{grid-column:1/-1;padding-left:120px}.footer{flex-direction:column}
+    }
+    @media(max-width:520px){
+      .shell{width:100%;padding:0}.sheet{border-left:0;border-right:0}.identity,.panel,.evidence,.ops-bar,.statusline{padding-left:14px;padding-right:14px}.meta{padding:12px}.actions{grid-template-columns:1fr}.slot{grid-template-columns:56px 52px 1fr}.slot .resources{padding-left:108px}.event{grid-template-columns:82px 12px 1fr}.final-wrap{gap:10px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+      .agent.running::after{animation:none!important}
+    }
   </style>
 </head>
 <body>
   <main class="shell">
-    <header class="topbar"><div class="brand"><div class="mark">C0</div><div><strong>CALLSHEET ZERO</strong><small>Concurrent constraint repair</small></div></div><div class="badge" id="modeBadge">Mozaik v4 · ready</div></header>
-    <div class="judge-cue"><strong>THREE AGENTS REACT AT ONCE.</strong><span>Shared state · independent decisions · real collisions</span></div>
-    <section class="hero"><div><div class="eyebrow">A world that won't wait</div><h1>Repair the plan <span>while reality changes.</span></h1><p>Three production agents react to the same disruption at the same time. A deterministic guard catches shared-resource collisions, then triggers an event-driven repair without restarting the whole workflow.</p></div><aside class="hero-side"><b>Three agents. One film shoot. They don't wait for each other.</b><br/>The product is visible, provable repair under concurrent pressure — shared state, competing local decisions, machine-checkable constraints, and a coherent plan at the end.</aside></section>
-    <section class="control"><div class="shock"><div class="pulse"></div><div class="shock-text"><b>Scenario armed: Rain + actor delay</b><span>Exterior lost · lead actor +90m · vehicle scarcity</span></div></div><div class="actions"><button class="run" id="runBtn">Run disruption <span class="kbd">↵</span></button><button class="replay" id="replayBtn">Replay verified repair</button></div></section>
-    <div class="replay-note"><b>VERIFIED REPLAY</b><span>Replays captured receipts from the canonical 2026-09-05 live Mozaik run. It does not trigger a new model execution and is never presented as live.</span></div>
-    <div class="statusline" id="status">READY · run live, or replay the already-verified conflict → repair path for a deterministic judge view.</div>
-    <section class="grid">
-      <article class="card before"><div class="section-title"><h2>Before</h2><span>14:00 stable state</span></div><div class="schedule" id="beforeSchedule"></div></article>
-      <article class="card world"><div class="section-title"><h2>Reality changed</h2><span>shared runtime state</span></div><div class="world-shocks"><div class="shock-card"><div class="icon">🌧</div><b>Exterior location lost</b><p>The courtyard is no longer safe for the scheduled exterior work.</p></div><div class="shock-card"><div class="icon">⏱</div><b>Lead actor +90m</b><p>Cast availability shifts while transport and camera resources remain scarce.</p></div></div><div class="thesis"><strong>Concurrency test:</strong> can independent agents respond immediately, collide honestly, and repair against the state that exists now — rather than the state they started with?</div></article>
-      <article class="card agents"><div class="section-title"><h2>Concurrent agents</h2><span>same event · different local objectives</span></div><div class="agent-grid"><div class="agent" data-role="schedule"><div class="agent-head"><b>Schedule Agent</b><span class="agent-state">idle</span></div><p>Protects throughput and scene order without waiting for cast or logistics agents.</p><div class="proposal">No proposal yet.</div></div><div class="agent" data-role="talent"><div class="agent-head"><b>Talent Agent</b><span class="agent-state">idle</span></div><p>Optimizes actor availability and continuity from its own operational viewpoint.</p><div class="proposal">No proposal yet.</div></div><div class="agent" data-role="logistics"><div class="agent-head"><b>Logistics Agent</b><span class="agent-state">idle</span></div><p>Protects equipment, location and transport feasibility under the weather shock.</p><div class="proposal">No proposal yet.</div></div></div></article>
-      <article class="card timeline-card"><div class="section-title"><h2>Runtime receipts</h2><span>Mozaik semantic events</span></div><div class="timeline" id="timeline"><div class="empty">Run live or replay the verified repair to surface inference overlap, conflicts and repair.</div></div></article>
-      <article class="card proof"><div class="section-title"><h2>Concurrency proof</h2><span>not Promise.all theater</span></div><div class="proof-panel"><div class="metric" id="proofMetric"><div class="label">All 3 started before first completion</div><div class="value">—</div><div class="sub">Waiting for an event timeline.</div></div><div class="metric"><div class="label">Constraint guard</div><div class="value" id="conflictCount">—</div><div class="sub">Shared-resource collisions from overlapping proposals.</div></div><div class="conflicts" id="conflicts"><div class="empty">No receipts yet.</div></div></div></article>
-      <article class="card final"><div class="section-title"><h2>After repair</h2><span>committed shared state</span></div><div class="final-grid" id="finalPlan"><div class="empty" style="grid-column:1/-1">A repaired call sheet will appear here.</div></div></article>
+    <section class="sheet">
+      <header class="doc-head">
+        <div class="identity">
+          <div class="kicker">Shoot Day 01 · Unit A · Revision Control</div>
+          <h1>CALLSHEET ZERO</h1>
+          <p>Concurrent production recovery. Three Mozaik agents react at once; a deterministic Constraint Guard stops unsafe resource collisions and requests only the repair the live schedule needs.</p>
+        </div>
+        <div class="meta-grid" aria-label="Production conditions">
+          <div class="meta warning"><span class="label">Weather hold</span><strong>Courtyard exterior</strong></div>
+          <div class="meta conflict"><span class="label">Lead actor</span><strong>+90 min delay</strong></div>
+          <div class="meta"><span class="label">Current revision</span><strong class="mono">REV 01</strong></div>
+          <div class="meta"><span class="label">Runtime</span><strong id="modeBadge">Mozaik v4 · ready</strong></div>
+        </div>
+      </header>
+
+      <section class="ops-bar">
+        <div class="incident"><span class="incident-mark" aria-hidden="true"></span><div><b>Shoot disruption armed</b><span>Exterior lost · lead actor delayed · camera and vehicle resources remain scarce.</span></div></div>
+        <div class="actions"><button class="run" id="runBtn">Run live <span class="kbd">↵</span></button><button class="replay" id="replayBtn">Replay verified repair</button></div>
+      </section>
+
+      <section class="evidence" aria-label="Canonical verified run evidence">
+        <div class="evidence-head"><strong>Canonical Verified Run · 2026-09-05</strong><span class="mono">CAPTURED LIVE EVIDENCE · NOT A NEW MODEL CALL</span></div>
+        <div class="evidence-strip" id="evidenceStrip">
+          <div class="proof-step" data-proof="1"><span class="n">01 · CONCURRENCY</span><b>3 agents started</b><small>All before first completion</small></div>
+          <div class="proof-step conflict" data-proof="2"><span class="n">02 · CONSTRAINT HOLD</span><b>3 resource collisions</b><small>lead_actor · camera_a · van_1</small></div>
+          <div class="proof-step repair" data-proof="3"><span class="n">03 · TARGETED REPAIR</span><b>repair.requested</b><small>Schedule Agent only</small></div>
+          <div class="proof-step repair" data-proof="4"><span class="n">04 · REVISION 02</span><b>S22 · 18:00</b><small>Updated shared state</small></div>
+          <div class="proof-step commit" data-proof="5"><span class="n">05 · COMMIT</span><b>0 final conflicts</b><small>Conflict-free call sheet</small></div>
+        </div>
+        <div class="provenance"><b>Verified Replay</b> walks through these captured receipts deterministically. <b>Run live</b> starts a fresh stochastic model execution and may produce a different valid repair path.</div>
+      </section>
+
+      <div class="statusline" id="status">READY · choose a fresh live run or replay the verified conflict → repair evidence.</div>
+
+      <section class="main-grid">
+        <article class="panel before left">
+          <div class="section-title"><h2>Call Sheet · Revision 01</h2><span>Stable plan before disruption</span></div>
+          <div class="revision-band"><strong>REV 01 · INITIAL PLAN</strong><span>STATUS · ISSUED</span></div>
+          <div class="schedule" id="beforeSchedule"></div>
+        </article>
+
+        <article class="panel shock-panel">
+          <div class="section-title"><h2>Production Incident</h2><span>Shared runtime state changed</span></div>
+          <div class="shock-grid">
+            <div class="shock-card"><div class="flag">WEATHER HOLD</div><b>Courtyard exterior lost</b><p>The scheduled exterior is no longer safe for the current production window.</p></div>
+            <div class="shock-card"><div class="flag">CAST DELAY</div><b>Lead actor +90 min</b><p>Cast availability shifts while camera and transport constraints remain live.</p></div>
+          </div>
+          <div class="thesis"><strong>Operational question:</strong> can independent agents respond immediately, collide honestly, and repair against the state that exists now?</div>
+        </article>
+
+        <article class="panel agents">
+          <div class="section-title"><h2>Revision 01 · Concurrent Proposals</h2><span>Same disruption · independent objectives</span></div>
+          <div class="agent-grid">
+            <div class="agent" data-role="schedule"><div class="agent-head"><b>Schedule Agent</b><span class="agent-state">idle</span></div><p>Protects scene throughput and order without waiting for cast or logistics.</p><div class="proposal">No proposal yet.</div></div>
+            <div class="agent" data-role="talent"><div class="agent-head"><b>Talent Agent</b><span class="agent-state">idle</span></div><p>Optimizes actor availability and continuity from the talent constraint view.</p><div class="proposal">No proposal yet.</div></div>
+            <div class="agent" data-role="logistics"><div class="agent-head"><b>Logistics Agent</b><span class="agent-state">idle</span></div><p>Protects equipment, location and transport feasibility under the weather hold.</p><div class="proposal">No proposal yet.</div></div>
+          </div>
+        </article>
+
+        <article class="panel receipts left">
+          <div class="section-title"><h2>Runtime Receipts</h2><span>Mozaik semantic events</span></div>
+          <div class="timeline" id="timeline"><div class="empty">Run live or replay verified evidence to inspect inference overlap, holds and repair.</div></div>
+        </article>
+
+        <article class="panel guard">
+          <div class="section-title"><h2>Constraint Guard</h2><span>Deterministic safety layer</span></div>
+          <div class="metric" id="proofMetric"><div class="label">Current view · concurrency</div><div class="value">—</div><div class="sub">Waiting for event receipts.</div></div>
+          <div class="metric"><div class="label">Current view · resource holds</div><div class="value" id="conflictCount">—</div><div class="sub">Exact overlapping claims detected in this view.</div></div>
+          <div class="conflicts" id="conflicts"><div class="empty">No Constraint Guard receipts yet.</div></div>
+        </article>
+
+        <article class="panel final">
+          <div class="section-title"><h2>Committed Call Sheet</h2><span>Post-Guard shared state</span></div>
+          <div class="final-wrap">
+            <div class="final-grid" id="finalPlan"><div class="empty" style="grid-column:1/-1">A committed revision will appear here.</div></div>
+            <div class="approval neutral" id="finalStamp"><span class="rev">REVISION STATUS</span><strong>PENDING</strong><span>Waiting for committed state</span></div>
+          </div>
+        </article>
+      </section>
+
+      <footer class="footer"><span><strong>CALLSHEET ZERO</strong> · production revision control</span><span>Mozaik core 4.0.5 · 3 AI agents + deterministic Constraint Guard</span></footer>
     </section>
-    <footer class="footer"><span><strong>CALLSHEET ZERO</strong> · JigJoy × daily.dev × Hyperskill Hackathon 2026</span><span>Mozaik core 4.0.5 · 3 AI agents + deterministic guard</span></footer>
   </main>
+
   <script>
-    const before=[{sceneId:'S14',start:'14:00',location:'Courtyard',resources:['lead_actor','camera_a','van_1']},{sceneId:'S18',start:'15:15',location:'Warehouse',resources:['support_cast','camera_b','van_1']},{sceneId:'S22',start:'16:30',location:'Stage B',resources:['lead_actor','camera_a']}];
-    const beforeEl=document.getElementById('beforeSchedule');beforeEl.innerHTML=before.map(s=>`<div class="slot"><time>${s.start}</time><div><b>${s.sceneId}</b><small>${s.location}</small></div><span class="tag">${s.resources[0]}</span></div>`).join('');
-    const btn=document.getElementById('runBtn'),replayBtn=document.getElementById('replayBtn'),status=document.getElementById('status'),badge=document.getElementById('modeBadge');
+    const before=[
+      {sceneId:'S14',start:'14:00',location:'Courtyard',resources:['lead_actor','camera_a','van_1']},
+      {sceneId:'S18',start:'15:15',location:'Warehouse',resources:['support_cast','camera_b','van_1']},
+      {sceneId:'S22',start:'16:30',location:'Stage B',resources:['lead_actor','camera_a']}
+    ];
+    document.getElementById('beforeSchedule').innerHTML=before.map(s=>`<div class="slot"><time>${s.start}</time><span class="scene">${s.sceneId}</span><span>${s.location}</span><span class="resources">${s.resources.join(' · ')}</span></div>`).join('');
+
+    const btn=document.getElementById('runBtn');
+    const replayBtn=document.getElementById('replayBtn');
+    const status=document.getElementById('status');
+    const badge=document.getElementById('modeBadge');
+    const finalStamp=document.getElementById('finalStamp');
+
     const canonical={
       mode:'replay',model:'claude-sonnet-4-6',source:'docs/EVIDENCE_G1_G2.md',
       concurrencyProof:{allStartedBeforeFirstCompleted:true,explanation:'Verified live receipts: all 3 initial loops started before any completed · 8.432s three-way overlap.'},
@@ -84,38 +237,90 @@
         {agentRole:'schedule',version:2,sceneId:'S22',start:'18:00',location:'Stage B',resources:['lead_actor','camera_a','van_1'],action:'Repair starts exactly when the competing 16:30–18:00 claims release.'}
       ]
     };
-    function resetAgents(){document.querySelectorAll('.agent').forEach(el=>{el.className='agent running';el.querySelector('.agent-state').textContent='running';el.querySelector('.proposal').textContent='Thinking against shared state…';});}
+
+    function clearReplayHighlights(){document.querySelectorAll('[data-proof]').forEach(el=>el.classList.remove('replay-active'));}
+    function highlightProof(step){clearReplayHighlights();const el=document.querySelector(`[data-proof="${step}"]`);if(el)el.classList.add('replay-active');}
+    function resetAgents(){document.querySelectorAll('.agent').forEach(el=>{el.className='agent running';el.querySelector('.agent-state').textContent='running';el.querySelector('.proposal').textContent='Working against shared state…';});}
     function roleLabel(role){return role.charAt(0).toUpperCase()+role.slice(1)+' Agent'}
     function eventClass(kind){if(kind.includes('started'))return 'started';if(kind.includes('conflict'))return 'conflict';if(kind.includes('repair'))return 'repair';if(kind.includes('commit'))return 'commit';return ''}
     function prettyTime(iso){const d=new Date(iso);return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit',fractionalSecondDigits:3});}
+
     function render(result){
-      const isLive=result.mode==='live',isReplay=result.mode==='replay';
-      badge.textContent=isLive?`LIVE · ${result.model}`:isReplay?'VERIFIED REPLAY · LIVE EVIDENCE':`SIMULATION · ${result.model}`;
+      const isLive=result.mode==='live',isReplay=result.mode==='replay',isSimulation=!isLive&&!isReplay;
+      badge.textContent=isLive?`LIVE · ${result.model}`:isReplay?'VERIFIED REPLAY':`SIMULATION · ${result.model}`;
       status.className='statusline '+(isLive?'live':isReplay?'replay-status':'');
       status.textContent=isLive?`LIVE COMPLETE · ${result.concurrencyProof.explanation}`:isReplay?`VERIFIED REPLAY · captured live receipts · ${result.concurrencyProof.explanation}`:`PREVIEW COMPLETE · ${result.note||result.concurrencyProof.explanation}`;
-      for(const p of result.proposals){const card=document.querySelector(`.agent[data-role="${p.agentRole}"]`);if(!card)continue;card.className='agent done';card.querySelector('.agent-state').textContent=p.version===2?'repaired':'done';card.querySelector('.proposal').innerHTML=`<em>${p.sceneId} @ ${p.start}</em><br>${p.location} · ${p.resources.join(' + ')}`;}
-      const timeline=document.getElementById('timeline');timeline.innerHTML=result.timeline.map(e=>`<div class="event ${eventClass(e.kind)}"><time>${prettyTime(e.at)}</time><span class="dot"></span><div class="event-text"><strong>${e.kind}</strong><br>${e.label}</div></div>`).join('');
-      const metric=document.getElementById('proofMetric'),pass=result.concurrencyProof.allStartedBeforeFirstCompleted;metric.className='metric '+(pass?'good':'warn');metric.querySelector('.value').textContent=isReplay&&pass?'PROVED':' '+(pass?'PROVED':'CHECK');metric.querySelector('.sub').textContent=result.concurrencyProof.explanation;
-      document.getElementById('conflictCount').textContent=String(result.conflicts.length);const conflictEl=document.getElementById('conflicts');conflictEl.innerHTML=result.conflicts.length?result.conflicts.map(c=>`<div class="conflict-row"><div><b>${roleLabel(c.leftRole)} ↔ ${roleLabel(c.rightRole)}</b><small>Overlapping claim on a scarce resource</small></div><code>${c.resource}</code></div>`).join(''):'<div class="empty">No shared-resource conflict detected.</div>';
-      document.getElementById('finalPlan').innerHTML=result.finalPlan.length?result.finalPlan.map(p=>`<div class="final-item"><div class="role">${roleLabel(p.agentRole)} · v${p.version}</div><h3>${p.sceneId} · ${p.start}</h3><p>${p.action}</p><div class="resources">${p.location} · ${p.resources.join(' / ')}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Repair still in progress…</div>';
+
+      for(const p of result.proposals){
+        const card=document.querySelector(`.agent[data-role="${p.agentRole}"]`);if(!card)continue;
+        card.className='agent done';card.querySelector('.agent-state').textContent=p.version===2?'rev 02':'done';
+        card.querySelector('.proposal').innerHTML=`<em>${p.sceneId} @ ${p.start}</em><br>${p.location} · ${p.resources.join(' + ')}`;
+      }
+
+      document.getElementById('timeline').innerHTML=result.timeline.length?result.timeline.map(e=>`<div class="event ${eventClass(e.kind)}"><time>${prettyTime(e.at)}</time><span class="dot"></span><div class="event-text"><strong>${e.kind}</strong><br>${e.label}</div></div>`).join(''):'<div class="empty">No runtime receipts in this view.</div>';
+
+      const metric=document.getElementById('proofMetric');
+      const pass=result.concurrencyProof.allStartedBeforeFirstCompleted;
+      metric.className='metric '+(pass?'good':'warn');
+      metric.querySelector('.value').textContent=isReplay&&pass?'VERIFIED':isLive&&pass?'PROVED':isSimulation?'PREVIEW':'CHECK';
+      metric.querySelector('.sub').textContent=result.concurrencyProof.explanation;
+
+      document.getElementById('conflictCount').textContent=String(result.conflicts.length);
+      const conflictEl=document.getElementById('conflicts');
+      conflictEl.innerHTML=result.conflicts.length?result.conflicts.map((c,i)=>`<div class="conflict-row"><div><span class="hold">CONSTRAINT HOLD ${String(i+1).padStart(2,'0')}</span><b>${roleLabel(c.leftRole)} ↔ ${roleLabel(c.rightRole)}</b><small>Overlapping claim on a scarce resource</small></div><code>${c.resource}</code></div>`).join(''):'<div class="empty">No shared-resource hold detected in this view.</div>';
+
+      const finalPlan=result.finalPlan||[];
+      document.getElementById('finalPlan').innerHTML=finalPlan.length?finalPlan.map(p=>`<div class="final-item"><div class="role">${roleLabel(p.agentRole)} · REV ${String(p.version).padStart(2,'0')}</div><h3>${p.sceneId} · ${p.start}</h3><p>${p.action}</p><div class="resources">${p.location} · ${p.resources.join(' / ')}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Repair or commit still pending.</div>';
+
+      const hasRev2=finalPlan.some(p=>p.version===2);
+      if(finalPlan.length){
+        finalStamp.className='approval';
+        finalStamp.innerHTML=hasRev2?'<span class="rev">REVISION 02</span><strong>CONFLICT-FREE</strong><span>Committed to shared state</span>':'<span class="rev">CURRENT RUN</span><strong>CONFLICT-FREE</strong><span>No repair required</span>';
+      }else{
+        finalStamp.className='approval neutral';finalStamp.innerHTML='<span class="rev">REVISION STATUS</span><strong>PENDING</strong><span>Waiting for committed state</span>';
+      }
     }
-    function stageResult({timelineEnd,conflicts=false,repaired=false,final=false}){return {...canonical,proposals:repaired?canonical.proposals:canonical.proposals.slice(0,3),timeline:canonical.timeline.slice(0,timelineEnd),conflicts:conflicts?canonical.conflicts:[],finalPlan:final?canonical.finalPlan:[]};}
+
+    function stageResult({timelineEnd,conflicts=false,repaired=false,final=false}){
+      return {...canonical,proposals:repaired?canonical.proposals:canonical.proposals.slice(0,3),timeline:canonical.timeline.slice(0,timelineEnd),conflicts:conflicts?canonical.conflicts:[],finalPlan:final?canonical.finalPlan:[]};
+    }
     const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+
     async function replay(){
-      btn.disabled=true;replayBtn.disabled=true;replayBtn.textContent='Replaying evidence…';badge.textContent='VERIFIED REPLAY · CAPTURED LIVE RUN';status.className='statusline replay-status';status.textContent='VERIFIED REPLAY · no model call · reconstructing captured Mozaik receipts from 2026-09-05';resetAgents();document.getElementById('timeline').innerHTML='<div class="empty">Replaying captured inference starts…</div>';document.getElementById('conflictCount').textContent='—';document.getElementById('conflicts').innerHTML='<div class="empty">Waiting for Guard receipts…</div>';document.getElementById('finalPlan').innerHTML='<div class="empty" style="grid-column:1/-1">Waiting for targeted repair…</div>';
-      await sleep(800);render(stageResult({timelineEnd:4}));
-      status.textContent='VERIFIED REPLAY · all 3 agents started before the first completion → concurrency PROVED';
-      await sleep(900);render(stageResult({timelineEnd:9,conflicts:true}));
-      status.textContent='VERIFIED REPLAY · 3 shared-resource collisions surfaced by the deterministic Guard';
-      await sleep(900);render(stageResult({timelineEnd:11,conflicts:true}));
-      status.textContent='VERIFIED REPLAY · repair.requested → Schedule Agent v2 is running against updated shared state';
+      btn.disabled=true;replayBtn.disabled=true;replayBtn.textContent='Replaying evidence…';
+      badge.textContent='VERIFIED REPLAY';status.className='statusline replay-status';status.textContent='VERIFIED REPLAY · no model call · walking captured Mozaik receipts from 2026-09-05';
+      resetAgents();clearReplayHighlights();
+      document.getElementById('timeline').innerHTML='<div class="empty">Loading captured inference starts…</div>';
+      document.getElementById('conflictCount').textContent='—';document.getElementById('conflicts').innerHTML='<div class="empty">Waiting for Constraint Guard receipts…</div>';
+      document.getElementById('finalPlan').innerHTML='<div class="empty" style="grid-column:1/-1">Waiting for targeted repair…</div>';finalStamp.className='approval neutral';finalStamp.innerHTML='<span class="rev">REVISION STATUS</span><strong>PENDING</strong><span>Verified replay in progress</span>';
+
+      await sleep(650);highlightProof(1);render(stageResult({timelineEnd:4}));status.textContent='VERIFIED REPLAY · 3 agents started before first completion → concurrency verified';
+      await sleep(750);highlightProof(2);render(stageResult({timelineEnd:9,conflicts:true}));status.textContent='VERIFIED REPLAY · 3 resource collisions → lead_actor · camera_a · van_1';
+      await sleep(750);highlightProof(3);render(stageResult({timelineEnd:11,conflicts:true}));status.textContent='VERIFIED REPLAY · repair.requested → Schedule Agent receives targeted repair';
       document.querySelector('.agent[data-role="schedule"]').className='agent running';document.querySelector('.agent[data-role="schedule"] .agent-state').textContent='repairing';
-      await sleep(900);render(stageResult({timelineEnd:13,conflicts:true,repaired:true,final:true}));
-      status.textContent='VERIFIED REPLAY COMPLETE · 3 conflicts → targeted Schedule v2 @ 18:00 → final conflicts 0';
+      await sleep(750);highlightProof(4);render(stageResult({timelineEnd:12,conflicts:true,repaired:true}));status.textContent='VERIFIED REPLAY · REV 02 → Schedule Agent returns S22 @ 18:00';
+      await sleep(750);highlightProof(5);render(stageResult({timelineEnd:13,conflicts:true,repaired:true,final:true}));status.textContent='VERIFIED REPLAY COMPLETE · REV 02 · S22 18:00 · final conflicts 0';
       btn.disabled=false;replayBtn.disabled=false;replayBtn.textContent='Replay verified repair';
     }
-    async function run(){btn.disabled=true;replayBtn.disabled=true;btn.textContent='Agents running…';status.className='statusline';status.textContent='RUNNING · three agents are reacting to the same disruption. Waiting for event receipts…';resetAgents();document.getElementById('timeline').innerHTML='<div class="empty">Mozaik run in progress…</div>';try{const res=await fetch('/api/run',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({})});const data=await res.json();if(!res.ok)throw new Error(data.message||'Run failed');render(data);}catch(err){status.className='statusline error';status.textContent='ERROR · '+err.message;document.querySelectorAll('.agent').forEach(el=>{el.classList.remove('running');el.querySelector('.agent-state').textContent='error';});}finally{btn.disabled=false;replayBtn.disabled=false;btn.innerHTML='Run again <span class="kbd">↵</span>';}}
-    btn.addEventListener('click',run);replayBtn.addEventListener('click',replay);document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!btn.disabled&&!replayBtn.disabled)run();});
+
+    async function run(){
+      btn.disabled=true;replayBtn.disabled=true;btn.textContent='Running live…';clearReplayHighlights();
+      status.className='statusline';status.textContent='LIVE RUNNING · three Mozaik agents are reacting to the current disruption…';resetAgents();
+      document.getElementById('timeline').innerHTML='<div class="empty">Waiting for Mozaik runtime receipts…</div>';
+      try{
+        const res=await fetch('/api/run',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({})});
+        const data=await res.json();if(!res.ok)throw new Error(data.message||'Run failed');render(data);
+      }catch(err){
+        status.className='statusline error';status.textContent='ERROR · '+err.message;
+        document.querySelectorAll('.agent').forEach(el=>{el.classList.remove('running');el.querySelector('.agent-state').textContent='error';});
+      }finally{
+        btn.disabled=false;replayBtn.disabled=false;btn.innerHTML='Run live <span class="kbd">↵</span>';
+      }
+    }
+
+    btn.addEventListener('click',run);
+    replayBtn.addEventListener('click',replay);
+    document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!btn.disabled&&!replayBtn.disabled)run();});
   </script>
 </body>
 </html>
