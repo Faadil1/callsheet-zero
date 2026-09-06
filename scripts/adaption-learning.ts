@@ -114,31 +114,48 @@ async function main() {
   const wantsEstimate = hasFlag("--estimate") || hasFlag("--run")
   const wantsRun = hasFlag("--run")
   const confirmsSpend = hasFlag("--confirm-spend")
+  const inputJsonl = argValue("--input-jsonl")
   const output = resolve(argValue("--out") || `artifacts/adaption-learning-${Date.now()}.jsonl`)
 
-  const result = await runCallsheetScenario({ forceSimulation: simulation })
-  const example = buildAdaptionLearningExample(result)
-  const metadata = JSON.parse(example.metadata) as { repairCaptured?: boolean }
+  let sourcePath = output
+  let repairCaptured = false
 
-  await mkdir(dirname(output), { recursive: true })
-  await writeFile(output, toAdaptionJsonl(example), "utf8")
+  if (inputJsonl) {
+    sourcePath = resolve(inputJsonl)
+    const raw = await readFile(sourcePath, "utf8")
+    const firstLine = raw.split(/\r?\n/).find((line) => line.trim())
+    if (!firstLine) throw new Error("Input JSONL is empty.")
+    const row = JSON.parse(firstLine) as { metadata?: string | Record<string, unknown> }
+    const metadata = typeof row.metadata === "string" ? JSON.parse(row.metadata) : row.metadata || {}
+    repairCaptured = Boolean((metadata as { repairCaptured?: boolean }).repairCaptured)
+    console.log(`Using existing learning dataset: ${sourcePath}`)
+    console.log(`repairCaptured=${repairCaptured}`)
+  } else {
+    const result = await runCallsheetScenario({ forceSimulation: simulation })
+    const example = buildAdaptionLearningExample(result)
+    const metadata = JSON.parse(example.metadata) as { repairCaptured?: boolean }
+    repairCaptured = Boolean(metadata.repairCaptured)
 
-  console.log(`Learning example exported: ${output}`)
-  console.log(`source mode=${result.mode} status=${result.status} model=${result.model}`)
-  console.log(`repairCaptured=${Boolean(metadata.repairCaptured)}`)
+    await mkdir(dirname(output), { recursive: true })
+    await writeFile(output, toAdaptionJsonl(example), "utf8")
+
+    console.log(`Learning example exported: ${output}`)
+    console.log(`source mode=${result.mode} status=${result.status} model=${result.model}`)
+    console.log(`repairCaptured=${repairCaptured}`)
+  }
 
   if (!wantsEstimate) {
     console.log("No Adaption credits used. Add --estimate to upload and request a quote.")
     return
   }
 
-  if (!metadata.repairCaptured) {
+  if (!repairCaptured) {
     throw new Error(
-      "Adaption upload blocked: this run completed without a version-2 constraint repair, so it is not eligible for the repair-learning dataset. Run the scenario again or use --simulation for a pipeline-only check.",
+      "Adaption upload blocked: the selected example does not contain a verified version-2 constraint repair.",
     )
   }
 
-  const datasetId = await createAndUploadDataset(output)
+  const datasetId = await createAndUploadDataset(sourcePath)
   console.log(`Adaption dataset ready: ${datasetId}`)
 
   const maxRows = Math.max(1, Number(process.env.ADAPTION_MAX_ROWS || "1"))
