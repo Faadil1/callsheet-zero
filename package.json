@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "adaption:export": "tsx scripts/adaption-learning.ts",
     "adaption:estimate": "tsx scripts/adaption-learning.ts --estimate",
-    "adaption:run": "tsx scripts/adaption-learning.ts --run"
+    "adaption:run": "tsx scripts/adaption-learning.ts --run",
+    "adaption:estimate:seed": "tsx scripts/adaption-learning.ts --estimate --input-jsonl=data/adaption/verified-repair-seed.jsonl",
+    "adaption:run:seed": "tsx scripts/adaption-learning.ts --run --input-jsonl=data/adaption/verified-repair-seed.jsonl"
   },
   "engines": {
     "node": "22.x"
