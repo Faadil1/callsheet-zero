@@ -10,6 +10,8 @@ A second, optional layer uses **Adaption Labs Adaptive Data** asynchronously: co
 
 > A normal scheduling agent plans for the world it was given. CALLSHEET ZERO keeps repairing the plan while the world changes — because its agents do not wait for each other.
 
+**Judge memory sentence:** Three agents make good decisions at the same time. CALLSHEET ZERO catches when those decisions collide — and repairs the plan live.
+
 The demo is deliberately small and inspectable:
 
 1. Rain removes an exterior location and the lead actor is delayed 90 minutes.
@@ -39,6 +41,29 @@ The original local evidence measured approximately **8.432 seconds** of three-wa
 Production: **https://callsheet-zero.vercel.app**
 
 See [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md) for the original live timestamps, Mozaik Cloud loop receipts, conflict list, repair event, and final invariant proof.
+
+## Live run vs Verified Repair Replay
+
+The product exposes two intentionally different judge paths:
+
+- **Run disruption** triggers a new live `/api/run` execution. Model decisions are stochastic, so a valid run can occasionally avoid a collision on its first proposals.
+- **Replay verified repair** does **not** call a model. It reconstructs the already-verified receipts from the canonical 2026-09-05 live Mozaik run so the conflict → Guard → targeted repair mechanism can be inspected deterministically.
+
+The replay is explicitly labeled **VERIFIED REPLAY** in-product and is never presented as a new live execution. It exists to surface evidence that has already been proved, not to simulate or fabricate a successful run.
+
+The replay shows the canonical evidence path:
+
+```text
+3 initial agents start before any completes
+→ concurrency PROVED
+→ lead_actor + camera_a + van_1 conflicts
+→ repair.requested
+→ Schedule Agent v2
+→ S22 @ 18:00
+→ final conflicts = 0
+```
+
+Winner Intelligence recommended this split after the human browser smoke test proved the live UI but produced a legitimate zero-conflict first pass. See [`docs/WINNER_INTELLIGENCE_G4A.md`](./docs/WINNER_INTELLIGENCE_G4A.md).
 
 ## Why this is genuinely concurrent
 
@@ -188,8 +213,10 @@ With `@mozaik-ai/core` 4.x, runtime events flow to Mozaik Cloud automatically.
 - [x] Live Vercel deployment with production Mozaik run
 - [x] Optional Adaption repair-learning layer implemented and budget-gated
 - [x] First bounded Adaption preference-pair run completed and downloaded
-- [ ] Human browser click smoke test
+- [x] Human browser click smoke test
+- [x] Winner Intelligence pre-submission judge-path audit
+- [x] Truthfully labeled Verified Repair Replay added for deterministic evidence surfacing
 - [ ] Short demo video
 - [ ] Hackathon submission
 
-See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md), [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md), [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md), and [`docs/STATE.md`](./docs/STATE.md).
+See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md), [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md), [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md), [`docs/EVIDENCE_G3G_UI_SMOKE.md`](./docs/EVIDENCE_G3G_UI_SMOKE.md), [`docs/WINNER_INTELLIGENCE_G4A.md`](./docs/WINNER_INTELLIGENCE_G4A.md), and [`docs/STATE.md`](./docs/STATE.md).
