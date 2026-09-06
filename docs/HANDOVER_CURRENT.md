@@ -8,10 +8,11 @@ Purpose: durable resume point for a new conversation or agent.
 1. `docs/STATE.md` — canonical project state.
 2. `docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md` — frozen design rework contract.
 3. `docs/TRACE_GATE_6_5_REFERENCE_AUDIT.md` — reference transfer record.
-4. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
-5. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
-6. `docs/WINNER_INTELLIGENCE_G4A.md` — pre-submission judge-path audit.
-7. TRACE project state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
+4. `docs/COMPETITIVE_SIGNAL_2026-09-06.md` — latest bounded submission/competitor signal.
+5. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
+6. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
+7. `docs/WINNER_INTELLIGENCE_G4A.md` — pre-submission judge-path audit.
+8. TRACE project state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
 
 ## Project
 
@@ -20,6 +21,21 @@ CALLSHEET ZERO is a film-production recovery system where three Mozaik agents re
 Judge memory sentence:
 
 > Three agents make good decisions at the same time. CALLSHEET ZERO catches when those decisions collide — and repairs the plan live.
+
+## Deadline and submission route — current
+
+Organizer Discord explicitly confirmed the final deadline as **Monday, September 7 at 9:00 AM CET**. The current official JigJoy page renders that as **3:00 AM ET**.
+
+Current official public requirement:
+
+```text
+REPO + SHORT DEMO
+SUBMIT THROUGH OFFICIAL SITE/FORM
+```
+
+Do not treat a Discord channel post as a proven submission requirement. Discord remains useful for support, so complete server onboarding before final submission if posting is still gated.
+
+Post-submission QA is mandatory because another participant reported a case where a successful form/API submission appeared in the gallery list but the detail route returned 404. After submitting, verify card + detail URL + repo/demo links and preserve the returned slug/confirmation.
 
 ## Product truth already proved
 
@@ -55,6 +71,8 @@ Constraint Guard = deterministic operational safety
 Adaption = asynchronous secondary learning layer
 ```
 
+Mozaik Cloud is useful but the organizer explicitly said it is not required for eligibility.
+
 Adaption A1 completed end-to-end successfully with one bounded preference-pairs row. Do not make Adaption the real-time hero or claim the sample proves unsafe→safe learning.
 
 ### Adaption credits — support confirmation
@@ -70,11 +88,46 @@ The support reply did not separately itemize the exact credit sources, so do not
 
 If the UI still shows a different balance, first verify that local sign-in is using the same account support matched. Do not store the account email itself in this public repository.
 
+## Latest competitor intelligence
+
+Public gallery is live. Social likes/comments exist, but they are not treated as judging criteria without an explicit rule.
+
+### OpsRoom
+
+A strong visible competitor. Public materials describe a solo incident-war-room project using 8 AI agents + 4 telemetry feeds on one Mozaik event bus, with risk challenge/interception and a human approval gate.
+
+Important response:
+
+```text
+DO NOT ESCALATE AGENT COUNT
+DO NOT REOPEN SCOPE
+```
+
+Current public judging guidance emphasizes **genuine concurrency**, not raw agent count. CALLSHEET ZERO already has direct receipt proof that all three initial agents started before any completed.
+
+Protected differentiation versus OpsRoom/general workflow systems:
+
+1. domain-specific film-production call-sheet revision;
+2. locally sensible decisions visibly collide over exact scarce resources;
+3. deterministic Guard checks hard constraints instead of asking another LLM to judge them;
+4. targeted `repair.requested` to Schedule Agent only;
+5. verified replay preserves truth while making the judge path deterministic;
+6. Warm Production Operations UI makes the system look like a real production revision instrument;
+7. Adaption is an additional asynchronous preference-data layer.
+
+A useful demo line if needed:
+
+> Three agents are enough to create the failure mode: concurrent local optima collide on shared production resources.
+
+Full record: `docs/COMPETITIVE_SIGNAL_2026-09-06.md`.
+
 ## Winner Intelligence state
 
 G4A passed. Core recommendation was Failure-as-Feature + deterministic verified repair replay so the final demo does not depend on stochastic model output.
 
 G4B is implemented and deployed. The existing live run path remains untouched. `Replay verified repair` is clearly labeled and reconstructs captured evidence only.
+
+The current competitor signal reinforces — rather than changes — the Winner Intelligence strategy: win on mechanism legibility and domain specificity, not number of agents.
 
 ## TRACE Design state
 
@@ -194,7 +247,8 @@ If Gate 6.5 passes:
 TRACE Gate 6.75 — Demo Narrative / Evidence Film
 → final 75–90 sec demo
 → Project Finisher
-→ human submission
+→ official submission form
+→ gallery/detail/link verification
 ```
 
 ## Authority boundaries
