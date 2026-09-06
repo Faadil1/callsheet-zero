@@ -13,6 +13,39 @@ Purpose: bounded pre-submission intelligence; do not reopen product scope.
 - Gallery supports likes/comments, but these are not treated as judging criteria absent an explicit rule.
 - Discord channel currently shows an onboarding gate before posting; this is not treated as a submission blocker because the official page/form is the submission route.
 
+## Official Mozaik resource links surfaced in Discord
+
+The official-links channel lists:
+- Mozaik website: `https://mozaik.jigjoy.ai/`
+- Mozaik Cloud: `https://app.jigjoy.ai/`
+- Documentation: `https://docs.jigjoy.ai/`
+- GitHub repository: `https://github.com/jigjoy-ai/mozaik`
+- LinkedIn: `https://www.linkedin.com/showcase/mozaik-runtime`
+- X: `https://x.com/mozaik_runtime`
+- YouTube: `https://www.youtube.com/@jigjoy_ai`
+
+Use these as canonical reference surfaces if a final submission or demo caption needs an official Mozaik link.
+
+## Sponsor / participant offers surfaced in Discord
+
+### Mem0
+
+Announcement states that Mem0 is sponsoring the hackathon and that every participant can request **three months of free agent memory** through the JigJoy claim form.
+
+Decision for CALLSHEET ZERO:
+- useful post-hackathon ecosystem opportunity;
+- **not needed for the current submission path**;
+- do not add Mem0 to the product this late merely because credits/access exist.
+
+### Mozaik Cloud Founding Builder offer
+
+Organizer announcement states that hackathon participants can obtain a **Founding Builder** offer: lifetime Mozaik Cloud access for a one-time **$50**, with the offer open until winners are announced on **September 13**.
+
+Decision for CALLSHEET ZERO:
+- post-submission commercial/tooling decision only;
+- no effect on eligibility or current build;
+- revisit after submission if long-term Mozaik usage justifies it.
+
 ## Visible competitor signals
 
 ### OpsRoom
@@ -48,6 +81,15 @@ A submitted project reported a gallery detail-route visibility bug after resubmi
 
 Interpretation:
 - important submission QA signal: after submitting, verify both gallery presence and project detail URL, not just a successful API/form response.
+
+### Tooling-pressure signal
+
+A participant reported exhausting Codex usage while polishing and asked about Nebius-backed coding-agent alternatives.
+
+Interpretation:
+- confirms the field is now in final-debug/polish mode;
+- no implication for CALLSHEET ZERO architecture;
+- avoid unnecessary tool migration this close to submission.
 
 ## CALLSHEET ZERO differentiation that must be protected
 
@@ -93,6 +135,10 @@ After the official form returns success:
 COMPETITIVE_SIGNAL = REVIEWED
 OPSROOM = STRONG_COMPETITOR_NO_SCOPE_REOPEN
 AGENT_COUNT_ESCALATION = REJECTED
+MEM0 = OPTIONAL_POST_SUBMISSION_NO_INTEGRATION_NOW
+MOZAIK_FOUNDING_BUILDER_OFFER = OPTIONAL_POST_SUBMISSION_DECISION
+OFFICIAL_MOZAIK_RESOURCE_LINKS = RECORDED
+TOOL_MIGRATION_THIS_LATE = REJECTED_UNLESS_BLOCKING
 OFFICIAL_SUBMISSION_ROUTE = FORM/GALLERY
 DISCORD_POSTING = NOT_PROVEN_REQUIRED
 SUBMISSION_DETAIL_URL_POSTCHECK = REQUIRED
