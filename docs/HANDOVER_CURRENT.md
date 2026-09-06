@@ -57,6 +57,19 @@ Adaption = asynchronous secondary learning layer
 
 Adaption A1 completed end-to-end successfully with one bounded preference-pairs row. Do not make Adaption the real-time hero or claim the sample proves unsafe→safe learning.
 
+### Adaption credits — support confirmation
+
+Support replied on 2026-09-06 and confirmed that the matched account has:
+
+```text
+PLAN = PLUS
+AVAILABLE_CREDITS = 649
+```
+
+The support reply did not separately itemize the exact credit sources, so do not state that a specific 500-credit bucket was independently enumerated by support. However, the previously blocking uncertainty is resolved for this project: Adaption credits are available and sponsor-credit availability is no longer a blocker.
+
+If the UI still shows a different balance, first verify that local sign-in is using the same account support matched. Do not store the account email itself in this public repository.
+
 ## Winner Intelligence state
 
 G4A passed. Core recommendation was Failure-as-Feature + deterministic verified repair replay so the final demo does not depend on stochastic model output.
