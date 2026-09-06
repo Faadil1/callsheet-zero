@@ -118,16 +118,24 @@ async function main() {
 
   const result = await runCallsheetScenario({ forceSimulation: simulation })
   const example = buildAdaptionLearningExample(result)
+  const metadata = JSON.parse(example.metadata) as { repairCaptured?: boolean }
+
   await mkdir(dirname(output), { recursive: true })
   await writeFile(output, toAdaptionJsonl(example), "utf8")
 
   console.log(`Learning example exported: ${output}`)
   console.log(`source mode=${result.mode} status=${result.status} model=${result.model}`)
-  console.log(`repairCaptured=${JSON.parse(example.metadata).repairCaptured}`)
+  console.log(`repairCaptured=${Boolean(metadata.repairCaptured)}`)
 
   if (!wantsEstimate) {
     console.log("No Adaption credits used. Add --estimate to upload and request a quote.")
     return
+  }
+
+  if (!metadata.repairCaptured) {
+    throw new Error(
+      "Adaption upload blocked: this run completed without a version-2 constraint repair, so it is not eligible for the repair-learning dataset. Run the scenario again or use --simulation for a pipeline-only check.",
+    )
   }
 
   const datasetId = await createAndUploadDataset(output)
