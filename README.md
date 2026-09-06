@@ -4,7 +4,7 @@
 
 CALLSHEET ZERO is a JigJoy × daily.dev × Hyperskill Hackathon 2026 project built on **Mozaik v4**. Three AI agents react independently to the same production disruption while sharing one runtime. Their locally sensible proposals can collide over scarce resources; a deterministic constraint guard catches those collisions and triggers an event-driven repair against the state that exists *now*.
 
-A second, optional layer uses **Adaption Labs Adaptive Data** asynchronously: completed repair outcomes are converted into model-ready learning examples so future scheduling agents can learn from the difference between a locally sensible but conflicting proposal and the repair that actually passed the guard.
+A second, optional layer uses **Adaption Labs Adaptive Data** asynchronously: completed repair outcomes are converted into model-ready learning examples so future scheduling agents can learn from the difference between candidate repairs while the deterministic guard remains the authority for operational safety.
 
 ## Judge thesis
 
@@ -20,7 +20,7 @@ The demo is deliberately small and inspectable:
 6. It publishes `repair.requested` to the Schedule Agent.
 7. The Schedule Agent runs a second loop against the updated shared state.
 8. A conflict-free plan is committed.
-9. The completed run emits an **Adaption learning example** containing the disruption, initial proposal, exact conflicts, peer context, and accepted repair.
+9. The completed repair is exported to **Adaption Labs**, which generates a `preference_pairs` artifact asynchronously.
 
 ## Verified live run
 
@@ -73,9 +73,14 @@ Production Controller
 │   ├─ preference-pair generation                │
 │   └─ future training/evaluation corpus         │
 └────────────────────────────────────────────────┘
+        │ generated candidate rows
+        ▼
+Deterministic post-generation validation
+        │
+        └─ promote only validated rows
 ```
 
-**Adaption is deliberately not in the real-time path.** Mozaik owns concurrent execution; the deterministic guard owns operational safety; Adaption learns from completed repair outcomes. If Adaption is unavailable, the live repair product still works.
+**Adaption is deliberately not in the real-time path.** Mozaik owns concurrent execution; the deterministic guard owns operational safety; Adaption generates asynchronous learning data from completed repair outcomes. If Adaption is unavailable, the live repair product still works.
 
 ## Run locally
 
@@ -109,7 +114,7 @@ npm run demo -- --simulation
 
 ## Adaption learning loop
 
-Every `/api/run` response now includes a `learningExample` with:
+Every `/api/run` response includes a `learningExample` with:
 
 - `prompt`: disruption + baseline + initial schedule proposal + exact guard conflicts,
 - `completion`: accepted version-2 Schedule Agent repair,
@@ -134,9 +139,11 @@ Start a real bounded run only after reviewing the estimate:
 npm run adaption:run -- --confirm-spend
 ```
 
-The paid path is fail-closed: it refuses to run without explicit confirmation and aborts if the quote exceeds `ADAPTION_MAX_CREDITS` (default `10`). The first integration uses `training_type=preference_pairs` and `ADAPTION_MAX_ROWS=1` so the proof remains small and inspectable.
+The paid path is fail-closed: it refuses to run without explicit confirmation and aborts if the quote exceeds `ADAPTION_MAX_CREDITS` (default `10`). The first verified integration used `training_type=preference_pairs`, `ADAPTION_MAX_ROWS=1`, and completed successfully for an estimated **1 credit**. The resulting one-row JSONL contained generated `chosen` and `rejected` fields and was downloaded successfully.
 
-See [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md).
+The first generated `rejected` candidate was itself conflict-free, so CALLSHEET ZERO does **not** claim that Adaption independently learned an unsafe→safe transition from this sample. Instead, the proof is that a verified production repair can be turned into preference data end-to-end. Generated rows must still pass deterministic post-generation validation before promotion into a larger corpus.
+
+See [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md) and [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md).
 
 ## Mozaik Cloud
 
@@ -180,9 +187,9 @@ With `@mozaik-ai/core` 4.x, runtime events flow to Mozaik Cloud automatically.
 - [x] Public GitHub repository
 - [x] Live Vercel deployment with production Mozaik run
 - [x] Optional Adaption repair-learning layer implemented and budget-gated
-- [ ] First bounded Adaption preference-pair run
+- [x] First bounded Adaption preference-pair run completed and downloaded
 - [ ] Human browser click smoke test
 - [ ] Short demo video
 - [ ] Hackathon submission
 
-See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md), [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md), and [`docs/STATE.md`](./docs/STATE.md).
+See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md), [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md), [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md), and [`docs/STATE.md`](./docs/STATE.md).
