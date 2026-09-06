@@ -9,10 +9,11 @@ Purpose: durable resume point for a new conversation or agent.
 2. `docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md` — frozen design rework contract.
 3. `docs/TRACE_GATE_6_5_REFERENCE_AUDIT.md` — reference transfer record.
 4. `docs/COMPETITIVE_SIGNAL_2026-09-06.md` — latest bounded submission/competitor/ecosystem signal.
-5. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
-6. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
-7. `docs/WINNER_INTELLIGENCE_G4A.md` — pre-submission judge-path audit.
-8. TRACE project state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
+5. `docs/GALLERY_SCAN_2026-09-06.md` — bounded 23-submission gallery competitive scan.
+6. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
+7. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
+8. `docs/WINNER_INTELLIGENCE_G4A.md` — pre-submission judge-path audit.
+9. TRACE project state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
 
 ## Project
 
@@ -163,6 +164,58 @@ NO LATE TOOL MIGRATION UNLESS A REAL BLOCKER APPEARS
 ```
 
 Full record: `docs/COMPETITIVE_SIGNAL_2026-09-06.md`.
+
+## Gallery scan — bounded competitive map
+
+A user-provided 190-second gallery walkthrough exposed **23 current submissions**. Eleven had enough detail-page evidence for higher-confidence mechanism review.
+
+Strongest visible Tier A group:
+
+```text
+IncidentMesh
+OpsRoom
+ProofGate
+FAULTLINE
+watchtower
+Butterfly
+```
+
+Strong A-/B+ group:
+
+```text
+BountyProof
+AI SWARM STUDIO
+Cortex Study Room
+Claimswarm
+```
+
+Key field findings:
+
+1. **Incident/security/devtools are crowded.** CALLSHEET ZERO's film-production scheduling domain is genuinely differentiated.
+2. **Deterministic guards are not unique.** ProofGate, OpsRoom, BountyProof and others use attestors, arbiters, interception or human gates. The Guard alone must never be sold as the differentiator.
+3. **Parallel evidence investigation is the dominant concurrency pattern.** CALLSHEET ZERO has a stronger causal story: concurrency itself creates locally sensible decisions that collide over scarce shared resources.
+4. **Concurrency proof is becoming table stakes.** Several strong entries expose timing/overlap evidence. Our existing `all three initial loops started before any completed` proof must be surfaced in the demo.
+5. **Dark AI dashboards dominate the gallery.** TRACE's Warm Production Operations direction is strategically valuable and should be preserved.
+
+Protected CALLSHEET ZERO edge after scan:
+
+```text
+FILM PRODUCTION DOMAIN
++ CONCURRENCY-CREATED RESOURCE COLLISIONS
++ EXACT HARD CONSTRAINT RECEIPTS
++ TARGETED REPAIR TO ONE AGENT
++ VERIFIED REAL OVERLAP
++ TRUTHFUL REPLAY
++ DOMAIN-NATIVE WARM PRODUCTION UI
+```
+
+Winner Intelligence delta:
+
+> Parallel decisions are easy. Repairing the collisions they create is the product.
+
+Do not add agents, a human gate, extra sponsors, or a generic incident layer in response to the field.
+
+Full scan: `docs/GALLERY_SCAN_2026-09-06.md`.
 
 ## Winner Intelligence state
 
