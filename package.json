@@ -8,7 +8,10 @@
     "demo": "tsx scripts/demo.ts",
     "env:check": "tsx scripts/check-env.ts",
     "schema:check": "tsx scripts/check-schema.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "adaption:export": "tsx scripts/adaption-learning.ts",
+    "adaption:estimate": "tsx scripts/adaption-learning.ts --estimate",
+    "adaption:run": "tsx scripts/adaption-learning.ts --run"
   },
   "engines": {
     "node": "22.x"
