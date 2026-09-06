@@ -23,9 +23,9 @@ ADAPTION_MAX_ROWS=1
 ADAPTION_MAX_CREDITS=10
 ```
 
-The pipeline requests an estimate before any paid run and refuses to continue when the quote exceeds the configured credit cap.
+The pipeline requested an estimate before any paid run and refused to continue when the quote exceeded the configured credit cap.
 
-## Verified terminal result
+## Verified launch result
 
 ```text
 Using existing learning dataset: data/adaption/verified-repair-seed.jsonl
@@ -36,21 +36,61 @@ Adaption run started: dataset-76dbb5ae-03b8-47a5-961f-6dc8e9339d70-1788653350271
 Reserved estimate: 1 credits
 ```
 
-## Interpretation
+## Verified completion
 
-This proves that the Adaption API accepted the CALLSHEET ZERO learning dataset, returned a bounded 1-credit estimate, and accepted the explicit paid run request under the local 10-credit ceiling.
+The same dataset was polled through the Adaption status API until completion.
 
-It does **not** yet prove that processing has completed or that a final preference-pair artifact has been produced. Those require a follow-up status/output check.
+```text
+dataset_id = 76dbb5ae-03b8-47a5-961f-6dc8e9339d70
+status = succeeded
+row_count = 1
+progress.percent = 100
+progress.processed_rows = 1
+progress.total_rows = 1
+error_data = empty
+```
 
-## Current gate
+The processed artifact was downloaded successfully as JSONL:
+
+```text
+artifacts/adaption-a1-output.jsonl
+size = 5128 bytes
+rows = 1
+```
+
+The output contains the original CALLSHEET ZERO repair context plus generated `chosen` and `rejected` preference fields. The generated `chosen` repair keeps S22 on Stage B at 18:00 with the baseline-required `lead_actor` and `camera_a`, resolving the original 16:30 resource collisions. The source metadata remains attached, including the verified production deployment id, `repairCaptured=true`, `deterministicFallbackUsed=false`, and the 4953 ms production concurrency window.
+
+## Quality interpretation
+
+A1 proves the full sponsor integration path end to end:
+
+```text
+verified Mozaik production repair
+→ CALLSHEET ZERO learning seed
+→ Adaption upload
+→ estimate-only spend gate
+→ bounded paid preference_pairs run
+→ succeeded processing
+→ downloadable chosen/rejected artifact
+```
+
+The generated `rejected` candidate is also operationally conflict-free in this one-row result; its weakness is mainly representation/verbosity rather than an unsafe resource collision. Therefore this evidence should be described as **preference-data generation from a verified repair**, not as proof that Adaption independently learned an unsafe→safe transformation. The deterministic Constraint Guard remains the authority for operational safety, and generated learning rows should pass a post-generation validation gate before promotion into a larger training corpus.
+
+## Final gate
 
 ```text
 A1_ADAPTION_BOUNDED_RUN_START = PASS
+A1B_ADAPTION_PROCESSING = PASS
+A1B_ADAPTION_OUTPUT_DOWNLOAD = PASS
+A1B_ADAPTION_OUTPUT_ROWS = 1
+A1B_ADAPTION_OUTPUT_BYTES = 5128
+A1B_ADAPTION_PREFERENCE_FIELDS = CHOSEN_AND_REJECTED_PRESENT
 A1_ADAPTION_DATASET_ID = 76dbb5ae-03b8-47a5-961f-6dc8e9339d70
 A1_ADAPTION_RUN_ID = dataset-76dbb5ae-03b8-47a5-961f-6dc8e9339d70-1788653350271
 A1_ADAPTION_ESTIMATED_CREDITS = 1
 A1_ADAPTION_RESERVED_ESTIMATE = 1
 A1_ADAPTION_ESTIMATED_MINUTES = 11
-A1_ADAPTION_OUTPUT = PENDING
-NEXT_EXACT_GATE = A1B_VERIFY_RUN_COMPLETION_AND_OUTPUT
+A1_ADAPTION_END_TO_END = PASS
+ADAPTION_REAL_INTEGRATION = PROVED
+NEXT_EXACT_GATE = G3G_HUMAN_UI_CLICK_SMOKE_THEN_G4_DEMO_AND_SUBMISSION
 ```
