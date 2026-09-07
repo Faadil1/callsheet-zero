@@ -2,11 +2,38 @@
 
 **Concurrent constraint repair for a world that won't wait.**
 
-CALLSHEET ZERO is a JigJoy × daily.dev × Hyperskill Hackathon 2026 project built on **Mozaik v4**. Three AI agents react independently to the same film-production disruption while sharing one runtime. Their locally sensible proposals can collide over scarce actors, cameras and vehicles; a deterministic Constraint Guard refuses to commit an impossible revision and triggers only the targeted repair the live schedule needs.
+[Live product](https://callsheet-zero.vercel.app) · [Canonical receipt](https://callsheet-zero.vercel.app/evidence/canonical-run.json)
 
-> **Parallel decisions are easy. CALLSHEET ZERO refuses the collisions they create, then repairs the schedule against the world that exists now.**
+CALLSHEET ZERO is a JigJoy × daily.dev × Hyperskill Hackathon 2026 project built on **Mozaik v4**. Three AI agents react independently to the same film-production disruption while sharing one runtime. Their locally sensible proposals can collide over scarce actors, cameras, and vehicles; a deterministic Constraint Guard refuses to commit an impossible revision and triggers only the targeted repair the live schedule needs.
 
-Alternative hook: **Three agents can all be right locally — and still produce an impossible shoot.**
+> **Three agents can all be right locally — and still produce an impossible shoot.**
+
+## Portfolio snapshot
+
+| | |
+| --- | --- |
+| **Problem** | Concurrent agents can optimize their own local objectives while collectively creating a plan that cannot be executed. |
+| **Mechanism** | Shared Mozaik runtime + genuinely concurrent agent loops + deterministic shared-resource conflict detection + targeted event-driven repair. |
+| **Verified proof** | **8.432s** local three-way overlap → 3 hard holds → `REV 01 COMMIT REFUSED` → targeted Schedule repair → 0 final conflicts → `REV 02 COMMIT ALLOWED`. |
+| **Evidence model** | Live execution, deterministic verified replay, machine-readable canonical receipt, explicit simulation/live boundaries. |
+| **My role** | Product definition · system architecture · constraint/authority design · integration · testing · evidence design · deployment/submission preparation. |
+| **Stack** | TypeScript · Mozaik v4 · Anthropic · Vercel · event-driven agents · deterministic validation · Adaption Labs. |
+
+## Why this project matters
+
+A multi-agent system is not useful merely because several agents can run in parallel. The harder problem is **coordination under shared constraints**: locally reasonable decisions can still produce a globally impossible outcome.
+
+CALLSHEET ZERO makes that failure visible and gives hard operational invariants to a deterministic layer rather than asking an LLM to decide whether a call sheet is physically possible.
+
+The product pattern is:
+
+```text
+probabilistic proposals
+→ deterministic global constraint check
+→ fail closed on hard conflicts
+→ repair only what is necessary
+→ commit only when invariants pass
+```
 
 ## The signature proof
 
@@ -25,7 +52,17 @@ rain + lead actor +90 min
 → COMMIT ALLOWED
 ```
 
-The important distinction is causal: concurrency is not just used to make three investigations faster. The agents optimize different local objectives against the same changing production world, so their individually sensible decisions can create a globally impossible call sheet.
+The important distinction is causal: concurrency is not used merely to make three investigations faster. The agents optimize different local objectives against the same changing production world, so their individually sensible decisions can create a globally impossible call sheet.
+
+## What I owned
+
+- defined the product mechanism around concurrent local decisions colliding on shared production resources;
+- separated LLM/agent judgment from deterministic hard-constraint authority;
+- designed the targeted repair path rather than a full rerun of all agents;
+- integrated the shared runtime, model path, evidence capture, and deployment flow;
+- defined the verified replay so historical proof is never presented as a fresh live run;
+- structured the machine-readable evidence and judge path;
+- validated negative and positive paths, including commit refusal and eventual safe commit.
 
 ## Try it
 
@@ -42,7 +79,7 @@ Machine-readable canonical receipt:
 
 **https://callsheet-zero.vercel.app/evidence/canonical-run.json**
 
-The receipt includes the concurrency timing, exact hard holds, targeted repair, final commit, canonical production deployment, direct Mozaik Cloud loop URLs and the secondary Adaption proof boundary.
+The receipt includes concurrency timing, exact hard holds, targeted repair, final commit, canonical production deployment, direct Mozaik Cloud loop URLs, and the secondary Adaption proof boundary.
 
 Canonical evidence notes: [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md).
 
@@ -65,7 +102,7 @@ A live Anthropic run with `claude-sonnet-4-6` completed successfully on 2026-09-
 
 ## Why the concurrency is real
 
-Schedule, Talent and Logistics are separate Mozaik participants joined to one runtime. One `message.sent` disruption makes all three handlers eligible, and each starts its own fire-and-forget `runLoop()`. CALLSHEET ZERO records Mozaik's `inference.started` and `inference.completed` semantic events.
+Schedule, Talent, and Logistics are separate Mozaik participants joined to one runtime. One `message.sent` disruption makes all three handlers eligible, and each starts its own fire-and-forget `runLoop()`. CALLSHEET ZERO records Mozaik's `inference.started` and `inference.completed` semantic events.
 
 The proof condition is:
 
@@ -172,10 +209,17 @@ The paid path is fail-closed and budget-gated by `ADAPTION_MAX_CREDITS`.
 - [`docs/WINNER_INTELLIGENCE_G4A.md`](./docs/WINNER_INTELLIGENCE_G4A.md) — original pre-submission audit
 - [`docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md`](./docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md) — updated repeat-winner delta
 - [`docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md`](./docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md) — bounded hidden-spot integration pass
-- [`docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md`](./docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md) — anti-slop / evaluator UI contract
+- [`docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md`](./docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md) — evaluator UI / anti-slop contract
 - [`docs/GALLERY_SCAN_2026-09-06.md`](./docs/GALLERY_SCAN_2026-09-06.md) — bounded current-submission gallery scan
 - [`docs/STATE.md`](./docs/STATE.md) — canonical current state
 - [`docs/HANDOVER_CURRENT.md`](./docs/HANDOVER_CURRENT.md) — durable resume point
+
+## Claim boundaries
+
+- Live execution, verified replay, and simulation are deliberately labeled as different evidence classes.
+- `REV 01 COMMIT REFUSED` is a deterministic decision-layer interpretation of verified conflicts, not a fabricated Mozaik semantic event.
+- The Adaption proof demonstrates end-to-end preference-data generation from a verified repair; it does not yet prove unsafe→safe learning.
+- Hard operational safety is enforced by deterministic checks, not by trusting the model to self-certify.
 
 ## Submission checklist
 
