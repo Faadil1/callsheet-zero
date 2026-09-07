@@ -15,6 +15,7 @@
     html{background:var(--canvas)}
     body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
     button{font:inherit}
+    a{color:inherit}
     .shell{width:min(1280px,calc(100% - 30px));margin:0 auto;padding:18px 0 54px}
     .sheet{background:var(--surface);border:1px solid var(--rule);box-shadow:var(--paper-shadow)}
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
@@ -43,11 +44,13 @@
     .evidence-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
     .evidence-head strong{font-size:13px;text-transform:uppercase;letter-spacing:.08em}.evidence-head span{font-size:12px;color:var(--replay)}
     .evidence-strip{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--rule)}
-    .proof-step{padding:11px 12px;min-height:78px;border-right:1px solid var(--rule);background:var(--surface)}
+    .proof-step{padding:11px 12px;min-height:96px;border-right:1px solid var(--rule);background:var(--surface)}
     .proof-step:last-child{border-right:0}.proof-step .n{display:block;font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);margin-bottom:5px}.proof-step b{display:block;font-size:15px;line-height:1.2}.proof-step small{display:block;margin-top:5px;color:var(--muted);font-size:13px;line-height:1.25}
+    .proof-step .receipt{display:block;margin-top:8px;padding-top:7px;border-top:1px solid var(--rule);font:750 12.5px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--slate)}
     .proof-step.conflict b{color:var(--conflict)}.proof-step.repair b{color:var(--warning)}.proof-step.commit b{color:var(--resolved)}
     .proof-step.replay-active{outline:2px solid var(--replay);outline-offset:-2px;background:#f3f5f6}
-    .provenance{margin-top:8px;font-size:12px;line-height:1.35;color:var(--muted)}.provenance b{color:var(--replay)}
+    .provenance{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-top:9px;font-size:12.5px;line-height:1.4;color:var(--muted)}.provenance b{color:var(--replay)}
+    .evidence-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;white-space:nowrap}.evidence-links a{font-weight:800;color:var(--slate);text-decoration-thickness:1px;text-underline-offset:3px}
 
     .statusline{padding:11px 20px;border-bottom:1px solid var(--rule);font:700 13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);background:#f7f5ee}
     .statusline.live{color:var(--resolved)}.statusline.replay-status{color:var(--replay)}.statusline.error{color:var(--conflict)}
@@ -78,6 +81,9 @@
     .timeline{display:flex;flex-direction:column;max-height:395px;overflow:auto;border-top:1px solid var(--rule)}
     .event{display:grid;grid-template-columns:96px 14px 1fr;gap:9px;padding:9px 4px;border-bottom:1px solid var(--rule)}.event time{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}.dot{width:9px;height:9px;margin-top:4px;background:var(--slate)}.event.conflict .dot{background:var(--conflict)}.event.repair .dot{background:var(--warning)}.event.commit .dot{background:var(--resolved)}.event-text{font-size:14px;line-height:1.35;color:var(--muted)}.event-text strong{color:var(--ink);font-size:13px}
 
+    .commit-gate{margin-bottom:10px;padding:13px 14px;border:2px solid var(--rule);background:#f6f3eb}.commit-gate .gate-kicker{display:block;font:850 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.055em;color:var(--muted)}.commit-gate strong{display:block;margin:5px 0 4px;font-size:24px;line-height:1;letter-spacing:-.025em}.commit-gate small{display:block;font-size:13px;line-height:1.35;color:var(--muted)}
+    .commit-gate.blocked{border-color:var(--conflict);background:#faf1ef}.commit-gate.blocked .gate-kicker,.commit-gate.blocked strong{color:var(--conflict)}
+    .commit-gate.allowed{border-color:var(--resolved);background:#f3f7f3}.commit-gate.allowed .gate-kicker,.commit-gate.allowed strong{color:var(--resolved)}
     .metric{padding:11px 12px;border:1px solid var(--rule);margin-bottom:10px}.metric .label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.metric .value{font-size:25px;font-weight:900;letter-spacing:-.03em;margin-top:4px}.metric .sub{font-size:13px;line-height:1.35;color:var(--muted);margin-top:3px}.metric.good .value{color:var(--resolved)}.metric.warn .value{color:var(--warning)}
     .conflicts{display:grid;gap:8px}.conflict-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:10px 11px;border:1px solid #cfa59f;background:#faf1ef;align-items:center}.conflict-row .hold{display:block;font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--conflict);margin-bottom:3px}.conflict-row b{font-size:14px}.conflict-row small{display:block;color:var(--muted);font-size:13px;margin-top:3px}.conflict-row code{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--conflict);overflow-wrap:anywhere}.empty{color:var(--muted);font-size:14px;padding:15px 4px}
 
@@ -89,7 +95,7 @@
 
     @media(max-width:900px){
       .shell{width:min(100% - 18px,760px);padding-top:9px}.doc-head{grid-template-columns:1fr}.identity{border-right:0;border-bottom:1px solid var(--rule)}
-      .ops-bar{grid-template-columns:1fr}.actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.evidence-strip{grid-template-columns:1fr}.proof-step{border-right:0;border-bottom:1px solid var(--rule);min-height:0}.proof-step:last-child{border-bottom:0}
+      .ops-bar{grid-template-columns:1fr}.actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.evidence-strip{grid-template-columns:1fr}.proof-step{border-right:0;border-bottom:1px solid var(--rule);min-height:0}.proof-step:last-child{border-bottom:0}.provenance{flex-direction:column}.evidence-links{justify-content:flex-start;white-space:normal}
       .before,.shock-panel,.agents,.receipts,.guard,.final{grid-column:span 12}.panel.left{border-right:0}.before,.receipts{border-right:0}.agent-grid,.final-grid{grid-template-columns:1fr}.agent+.agent,.final-item+.final-item{border-left:0;border-top:1px solid var(--rule)}
       .shock-grid{grid-template-columns:1fr}.shock-card+.shock-card{border-left:0;border-top:1px solid var(--rule)}.final-wrap{grid-template-columns:1fr}.slot{grid-template-columns:60px 60px 1fr}.slot .resources{grid-column:1/-1;padding-left:120px}.footer{flex-direction:column}
     }
@@ -127,16 +133,16 @@
       <section class="evidence" aria-label="Canonical verified run evidence">
         <div class="evidence-head"><strong>Canonical Verified Run · 2026-09-05</strong><span class="mono">CAPTURED LIVE EVIDENCE · NOT A NEW MODEL CALL</span></div>
         <div class="evidence-strip" id="evidenceStrip">
-          <div class="proof-step" data-proof="1"><span class="n">01 · CONCURRENCY</span><b>3 agents started</b><small>All before first completion</small></div>
-          <div class="proof-step conflict" data-proof="2"><span class="n">02 · CONSTRAINT HOLD</span><b>3 resource collisions</b><small>lead_actor · camera_a · van_1</small></div>
-          <div class="proof-step repair" data-proof="3"><span class="n">03 · TARGETED REPAIR</span><b>repair.requested</b><small>Schedule Agent only</small></div>
-          <div class="proof-step repair" data-proof="4"><span class="n">04 · REVISION 02</span><b>S22 · 18:00</b><small>Updated shared state</small></div>
-          <div class="proof-step commit" data-proof="5"><span class="n">05 · COMMIT</span><b>0 final conflicts</b><small>Conflict-free call sheet</small></div>
+          <div class="proof-step" data-proof="1"><span class="n">01 · CONCURRENCY</span><b>3 agents started</b><small>All before first completion</small><span class="receipt">46.830 → 55.285 · 8.432s</span></div>
+          <div class="proof-step conflict" data-proof="2"><span class="n">02 · COMMIT GATE</span><b>REV 01 refused</b><small>lead_actor · camera_a · van_1</small><span class="receipt">3 exact hard holds</span></div>
+          <div class="proof-step repair" data-proof="3"><span class="n">03 · TARGETED REPAIR</span><b>repair.requested</b><small>Schedule Agent only</small><span class="receipt">17:54:56.058Z</span></div>
+          <div class="proof-step repair" data-proof="4"><span class="n">04 · REVISION 02</span><b>S22 · 18:00</b><small>Updated shared state</small><span class="receipt">17:55:00.317Z</span></div>
+          <div class="proof-step commit" data-proof="5"><span class="n">05 · COMMIT</span><b>0 final conflicts</b><small>Conflict-free call sheet</small><span class="receipt">17:55:00.318Z</span></div>
         </div>
-        <div class="provenance"><b>Verified Replay</b> walks through these captured receipts deterministically. <b>Run live</b> starts a fresh stochastic model execution and may produce a different valid repair path.</div>
+        <div class="provenance"><span><b>Verified Replay</b> walks through captured receipts deterministically. <b>Run live</b> starts a fresh stochastic model execution and may produce a different valid repair path.</span><span class="evidence-links"><a href="/evidence/canonical-run.json" target="_blank" rel="noopener">Raw receipt</a><a href="https://github.com/Faadil1/callsheet-zero/blob/main/docs/EVIDENCE_G1_G2.md" target="_blank" rel="noopener">Evidence notes</a></span></div>
       </section>
 
-      <div class="statusline" id="status">READY · choose a fresh live run or replay the verified conflict → repair evidence.</div>
+      <div class="statusline" id="status" aria-live="polite">READY · choose a fresh live run or replay the verified conflict → repair evidence.</div>
 
       <section class="main-grid">
         <article class="panel before left">
@@ -170,6 +176,7 @@
 
         <article class="panel guard">
           <div class="section-title"><h2>Constraint Guard</h2><span>Deterministic safety layer</span></div>
+          <div class="commit-gate" id="commitGate" aria-live="polite"><span class="gate-kicker">REV 01 · COMMIT GATE</span><strong>PENDING</strong><small>Waiting for concurrent proposals and hard-constraint evaluation.</small></div>
           <div class="metric" id="proofMetric"><div class="label">Current view · concurrency</div><div class="value">—</div><div class="sub">Waiting for event receipts.</div></div>
           <div class="metric"><div class="label">Current view · resource holds</div><div class="value" id="conflictCount">—</div><div class="sub">Exact overlapping claims detected in this view.</div></div>
           <div class="conflicts" id="conflicts"><div class="empty">No Constraint Guard receipts yet.</div></div>
@@ -201,6 +208,7 @@
     const status=document.getElementById('status');
     const badge=document.getElementById('modeBadge');
     const finalStamp=document.getElementById('finalStamp');
+    const commitGate=document.getElementById('commitGate');
 
     const canonical={
       mode:'replay',model:'claude-sonnet-4-6',source:'docs/EVIDENCE_G1_G2.md',
@@ -270,9 +278,20 @@
       conflictEl.innerHTML=result.conflicts.length?result.conflicts.map((c,i)=>`<div class="conflict-row"><div><span class="hold">CONSTRAINT HOLD ${String(i+1).padStart(2,'0')}</span><b>${roleLabel(c.leftRole)} ↔ ${roleLabel(c.rightRole)}</b><small>Overlapping claim on a scarce resource</small></div><code>${c.resource}</code></div>`).join(''):'<div class="empty">No shared-resource hold detected in this view.</div>';
 
       const finalPlan=result.finalPlan||[];
+      const hasRev2=finalPlan.some(p=>p.version===2);
+      if(finalPlan.length){
+        commitGate.className='commit-gate allowed';
+        commitGate.innerHTML=hasRev2?'<span class="gate-kicker">REV 02 · COMMIT GATE</span><strong>COMMIT ALLOWED</strong><small>REV 01 was refused on 3 hard holds. REV 02 clears the final constraint check.</small>':'<span class="gate-kicker">CURRENT RUN · COMMIT GATE</span><strong>COMMIT ALLOWED</strong><small>No hard shared-resource hold remains in the committed state.</small>';
+      }else if(result.conflicts.length){
+        commitGate.className='commit-gate blocked';
+        commitGate.innerHTML=`<span class="gate-kicker">REV 01 · COMMIT GATE</span><strong>COMMIT REFUSED</strong><small>${result.conflicts.length} hard shared-resource hold${result.conflicts.length===1?'':'s'} must clear before this revision can commit.</small>`;
+      }else{
+        commitGate.className='commit-gate';
+        commitGate.innerHTML='<span class="gate-kicker">REV 01 · COMMIT GATE</span><strong>EVALUATING</strong><small>No refusal receipt in this view yet.</small>';
+      }
+
       document.getElementById('finalPlan').innerHTML=finalPlan.length?finalPlan.map(p=>`<div class="final-item"><div class="role">${roleLabel(p.agentRole)} · REV ${String(p.version).padStart(2,'0')}</div><h3>${p.sceneId} · ${p.start}</h3><p>${p.action}</p><div class="resources">${p.location} · ${p.resources.join(' / ')}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Repair or commit still pending.</div>';
 
-      const hasRev2=finalPlan.some(p=>p.version===2);
       if(finalPlan.length){
         finalStamp.className='approval';
         finalStamp.innerHTML=hasRev2?'<span class="rev">REVISION 02</span><strong>CONFLICT-FREE</strong><span>Committed to shared state</span>':'<span class="rev">CURRENT RUN</span><strong>CONFLICT-FREE</strong><span>No repair required</span>';
@@ -292,26 +311,29 @@
       resetAgents();clearReplayHighlights();
       document.getElementById('timeline').innerHTML='<div class="empty">Loading captured inference starts…</div>';
       document.getElementById('conflictCount').textContent='—';document.getElementById('conflicts').innerHTML='<div class="empty">Waiting for Constraint Guard receipts…</div>';
+      commitGate.className='commit-gate';commitGate.innerHTML='<span class="gate-kicker">REV 01 · COMMIT GATE</span><strong>EVALUATING</strong><small>Waiting for all concurrent proposal receipts.</small>';
       document.getElementById('finalPlan').innerHTML='<div class="empty" style="grid-column:1/-1">Waiting for targeted repair…</div>';finalStamp.className='approval neutral';finalStamp.innerHTML='<span class="rev">REVISION STATUS</span><strong>PENDING</strong><span>Verified replay in progress</span>';
 
       await sleep(650);highlightProof(1);render(stageResult({timelineEnd:4}));status.textContent='VERIFIED REPLAY · 3 agents started before first completion → concurrency verified';
-      await sleep(750);highlightProof(2);render(stageResult({timelineEnd:9,conflicts:true}));status.textContent='VERIFIED REPLAY · 3 resource collisions → lead_actor · camera_a · van_1';
+      await sleep(750);highlightProof(2);render(stageResult({timelineEnd:9,conflicts:true}));status.textContent='VERIFIED REPLAY · REV 01 COMMIT REFUSED → lead_actor · camera_a · van_1';
       await sleep(750);highlightProof(3);render(stageResult({timelineEnd:11,conflicts:true}));status.textContent='VERIFIED REPLAY · repair.requested → Schedule Agent receives targeted repair';
       document.querySelector('.agent[data-role="schedule"]').className='agent running';document.querySelector('.agent[data-role="schedule"] .agent-state').textContent='repairing';
       await sleep(750);highlightProof(4);render(stageResult({timelineEnd:12,conflicts:true,repaired:true}));status.textContent='VERIFIED REPLAY · REV 02 → Schedule Agent returns S22 @ 18:00';
-      await sleep(750);highlightProof(5);render(stageResult({timelineEnd:13,conflicts:true,repaired:true,final:true}));status.textContent='VERIFIED REPLAY COMPLETE · REV 02 · S22 18:00 · final conflicts 0';
+      await sleep(750);highlightProof(5);render(stageResult({timelineEnd:13,conflicts:true,repaired:true,final:true}));status.textContent='VERIFIED REPLAY COMPLETE · REV 02 COMMIT ALLOWED · S22 18:00 · final conflicts 0';
       btn.disabled=false;replayBtn.disabled=false;replayBtn.textContent='Replay verified repair';
     }
 
     async function run(){
       btn.disabled=true;replayBtn.disabled=true;btn.textContent='Running live…';clearReplayHighlights();
       status.className='statusline';status.textContent='LIVE RUNNING · three Mozaik agents are reacting to the current disruption…';resetAgents();
+      commitGate.className='commit-gate';commitGate.innerHTML='<span class="gate-kicker">CURRENT RUN · COMMIT GATE</span><strong>EVALUATING</strong><small>Fresh proposals are still arriving against shared state.</small>';
       document.getElementById('timeline').innerHTML='<div class="empty">Waiting for Mozaik runtime receipts…</div>';
       try{
         const res=await fetch('/api/run',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({})});
         const data=await res.json();if(!res.ok)throw new Error(data.message||'Run failed');render(data);
       }catch(err){
         status.className='statusline error';status.textContent='ERROR · '+err.message;
+        commitGate.className='commit-gate';commitGate.innerHTML='<span class="gate-kicker">CURRENT RUN · COMMIT GATE</span><strong>NO DECISION</strong><small>Runtime failed before the deterministic commit check completed.</small>';
         document.querySelectorAll('.agent').forEach(el=>{el.classList.remove('running');el.querySelector('.agent-state').textContent='error';});
       }finally{
         btn.disabled=false;replayBtn.disabled=false;btn.innerHTML='Run live <span class="kbd">↵</span>';
