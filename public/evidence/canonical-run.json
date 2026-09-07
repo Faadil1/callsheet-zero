@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.1",
+  "project": "CALLSHEET ZERO",
+  "receiptType": "verified_live_run",
+  "publicProductUrl": "https://callsheet-zero.vercel.app",
+  "publicReceiptUrl": "https://callsheet-zero.vercel.app/evidence/canonical-run.json",
+  "integrity": {
+    "live": "fresh model execution",
+    "verifiedReplay": "captured canonical live evidence; no new model call",
+    "simulation": "explicit preview only"
+  },
+  "source": {
+    "evidenceDocument": "docs/EVIDENCE_G1_G2.md",
+    "evidenceDocumentUrl": "https://github.com/Faadil1/callsheet-zero/blob/main/docs/EVIDENCE_G1_G2.md",
+    "productionDeploymentId": "dpl_97NVNrioU1r2FEjMWhQA83ciTcvR",
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "mozaikCore": "4.0.5"
+  },
+  "concurrency": {
+    "agents": ["Schedule Agent", "Talent Agent", "Logistics Agent"],
+    "allInitialLoopsStartedBeforeFirstCompletion": true,
+    "threeWayOverlapMs": 8432,
+    "firstStart": "2026-09-05T17:54:46.830Z",
+    "firstCompletion": "2026-09-05T17:54:55.285Z",
+    "mozaikCloudLoops": [
+      {
+        "role": "initial",
+        "loopId": "loop_ab3f8defd14a4e91b78d3f3f5095a45a",
+        "url": "https://app.jigjoy.ai/?s=loop_ab3f8defd14a4e91b78d3f3f5095a45a"
+      },
+      {
+        "role": "initial",
+        "loopId": "loop_ada609e06e8a4adeb705208fc26ac97c",
+        "url": "https://app.jigjoy.ai/?s=loop_ada609e06e8a4adeb705208fc26ac97c"
+      },
+      {
+        "role": "initial",
+        "loopId": "loop_64f2a891e68e4720a0532019efbfcec9",
+        "url": "https://app.jigjoy.ai/?s=loop_64f2a891e68e4720a0532019efbfcec9"
+      },
+      {
+        "role": "repair",
+        "loopId": "loop_1eebc2d6a44c455b93136eb3c4e7fc09",
+        "url": "https://app.jigjoy.ai/?s=loop_1eebc2d6a44c455b93136eb3c4e7fc09"
+      }
+    ]
+  },
+  "revision01": {
+    "commitDecision": "REFUSED",
+    "reason": "hard shared-resource collisions",
+    "conflictCount": 3,
+    "conflicts": [
+      {"resource": "lead_actor", "left": "Talent Agent", "right": "Schedule Agent"},
+      {"resource": "camera_a", "left": "Talent Agent", "right": "Schedule Agent"},
+      {"resource": "van_1", "left": "Logistics Agent", "right": "Schedule Agent"}
+    ],
+    "derivedDecisionNote": "COMMIT REFUSED is the deterministic UI/decision interpretation of the three verified hard conflicts; it is not represented as a fabricated Mozaik event."
+  },
+  "repair": {
+    "event": "repair.requested",
+    "target": "Schedule Agent",
+    "requestedAt": "2026-09-05T17:54:56.058Z",
+    "version": 2,
+    "scene": "S22",
+    "newStart": "18:00",
+    "completedAt": "2026-09-05T17:55:00.317Z"
+  },
+  "revision02": {
+    "commitDecision": "ALLOWED",
+    "finalConflictCount": 0,
+    "committedAt": "2026-09-05T17:55:00.318Z",
+    "deterministicFallbackUsed": false
+  },
+  "secondaryLearning": {
+    "provider": "Adaption Labs",
+    "realtimeDependency": false,
+    "datasetId": "76dbb5ae-03b8-47a5-961f-6dc8e9339d70",
+    "runId": "dataset-76dbb5ae-03b8-47a5-961f-6dc8e9339d70-1788653350271",
+    "status": "succeeded",
+    "outputRows": 1,
+    "claimBoundary": "Preference data was generated from a verified repair; this single sample does not prove unsafe-to-safe learning."
+  }
+}
