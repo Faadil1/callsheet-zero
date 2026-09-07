@@ -2,24 +2,29 @@ name: Render CALLSHEET ZERO demo video
 on:
   workflow_dispatch:
   push:
-    paths: ["src/video/**", "evidence/canonical-run.json", ".github/workflows/render-demo-video.yml"]
+    paths: ["src/video/**", "public/**", "scripts/capture-live-demo.mjs", "evidence/canonical-run.json", ".github/workflows/render-demo-video.yml"]
 jobs:
   render:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: 22, cache: npm}
+        with:
+          node-version: 22
+          cache: npm
       - run: npm ci
-      - run: npx remotion browser ensure
+      - run: npx playwright install --with-deps chromium
       - run: mkdir -p out logs
+      - name: Capture deployed product
+        run: node scripts/capture-live-demo.mjs
+      - run: npx remotion browser ensure
       - name: Render
         id: render
         shell: bash
         run: |
           set -euo pipefail
           npx remotion render src/video/index.ts CallsheetZeroDemo out/CALLSHEET_ZERO_DEMO_1080P.mp4 --log=verbose 2>&1 | tee logs/remotion-render.log
-      - name: Verify output
+      - name: Verify output and proof frames
         if: success()
         run: |
           sudo apt-get update && sudo apt-get install -y ffmpeg
@@ -28,11 +33,14 @@ jobs:
           const fs=require('fs'); const x=JSON.parse(fs.readFileSync('out/render-metadata.json')); const v=x.streams.find(s=>s.codec_type==='video'), a=x.streams.find(s=>s.codec_type==='audio');
           if(!v||v.width!==1920||v.height!==1080||v.codec_name!=='h264'||v.r_frame_rate!=='30/1'||!a) process.exit(1);
           NODE
+          ffmpeg -y -pattern_type glob -i 'public/live-capture/*.png' -vf 'scale=480:-1,tile=4x3' -frames:v 1 out/proof-frame-contact-sheet.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: callsheet-zero-demo-video
-          path: out/
+          name: callsheet-zero-live-capture-and-video
+          path: |
+            out/
+            public/live-capture/
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -40,4 +48,3 @@ jobs:
           name: callsheet-zero-render-logs
           path: logs/
           if-no-files-found: warn
-
