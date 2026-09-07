@@ -21,9 +21,18 @@ function Allowed(){return <Frame eyebrow="REV 02 · VERIFIED REPLAY" captureName
 function Modes(){return <Frame eyebrow="TRUTH BOUNDARY" captureName="03-live-result"><Title text="Know what is live. Know what is replay."/><div className="modes"><Card><span className="eyebrow">RUN LIVE</span><h2>Fresh stochastic Mozaik execution</h2><p>Outcome may differ</p></Card><Card green><span className="eyebrow">VERIFIED REPLAY</span><h2>Captured canonical live evidence</h2><p>No new model call</p></Card></div><div className="receiptbox">evidence/canonical-run.json<br/><br/>threeWayOverlapMs: 8432<br/>conflictCount: 3<br/>repair.target: Schedule Agent<br/>revision02.finalConflictCount: 0</div></Frame>}
 function Adaption(){return <Frame eyebrow="SECONDARY ASYNCHRONOUS LAYER" captureName="09-adaption"><Title text="Verified repair can become preference data."/><div className="adaption"><div>VERIFIED REPAIR</div><b>↓</b><div>ADAPTION LABS</div><b>↓</b><div>preference_pairs<br/><small>chosen + rejected</small></div></div><p className="boundary">ASYNCHRONOUS · NOT IN RUN LIVE<br/>Constraint Guard remains safety authority</p></Frame>}
 function Closing(){return <Frame eyebrow="CONTINUITY DESK"><div className="closing"><span className="eyebrow">THE MEMORY HOOK</span><h1>Parallel decisions are easy.</h1><h2>CALLSHEET ZERO refuses the collisions they create — and repairs only what changed.</h2><div className="brand">CALLSHEET ZERO</div><p>Concurrent constraint repair for a world that won't wait.</p><small>callsheet-zero.vercel.app</small></div></Frame>}
-export const Video=()=> <AbsoluteFill><Audio src={narration}/><Sequence from={0} durationInFrames={180}><Desk/></Sequence><Sequence from={180} durationInFrames={300}><Concurrency/></Sequence><Sequence from={480} durationInFrames={390}><Refusal/></Sequence><Sequence from={870} durationInFrames={300}><Repair/></Sequence><Sequence from={1170} durationInFrames={330}><Allowed/></Sequence><Sequence from={1500} durationInFrames={360}><Modes/></Sequence><Sequence from={1860} durationInFrames={360}><Adaption/></Sequence><Sequence from={2220} durationInFrames={630}><Closing/></Sequence></AbsoluteFill>;
+
+// Sequence boundaries are aligned to the approved 94.294s narration master at 30 fps.
+// The final 21 frames are a clean visual tail after narration ends.
+export const Video=()=> <AbsoluteFill>
+ <Audio src={narration}/>
+ <Sequence from={0} durationInFrames={396}><Desk/></Sequence>
+ <Sequence from={396} durationInFrames={546}><Concurrency/></Sequence>
+ <Sequence from={942} durationInFrames={321}><Refusal/></Sequence>
+ <Sequence from={1263} durationInFrames={198}><Repair/></Sequence>
+ <Sequence from={1461} durationInFrames={360}><Allowed/></Sequence>
+ <Sequence from={1821} durationInFrames={326}><Modes/></Sequence>
+ <Sequence from={2147} durationInFrames={475}><Adaption/></Sequence>
+ <Sequence from={2622} durationInFrames={228}><Closing/></Sequence>
+</AbsoluteFill>;
 export const RemotionRoot=()=> <Composition id="CallsheetZeroDemo" component={Video} durationInFrames={2850} fps={30} width={1920} height={1080}/>;
-
-
-
-
