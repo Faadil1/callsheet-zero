@@ -10,18 +10,25 @@ Purpose: durable resume point for a new conversation or agent.
 3. `docs/TRACE_GATE_6_5_REFERENCE_AUDIT.md` — reference transfer record.
 4. `docs/COMPETITIVE_SIGNAL_2026-09-06.md` — latest bounded submission/competitor/ecosystem signal.
 5. `docs/GALLERY_SCAN_2026-09-06.md` — bounded 23-submission gallery competitive scan.
-6. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
-7. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
-8. `docs/WINNER_INTELLIGENCE_G4A.md` — pre-submission judge-path audit.
-9. TRACE project state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
+6. `docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md` — updated repeat-winner pre-submission delta.
+7. `docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md` — bounded hidden-spot integration record.
+8. `docs/EVIDENCE_G1_G2.md` — canonical live concurrency/conflict/repair proof.
+9. `evidence/canonical-run.json` — public machine-readable canonical receipt.
+10. `docs/EVIDENCE_G4B_DEMO_HARDENING.md` — verified replay implementation proof.
+11. `docs/WINNER_INTELLIGENCE_G4A.md` — original pre-submission judge-path audit.
+12. TRACE project state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
 
 ## Project
 
-CALLSHEET ZERO is a film-production recovery system where three Mozaik agents react concurrently to the same disruption. Their individually sensible proposals can collide over shared actors, cameras and vehicles. A deterministic Constraint Guard detects exact conflicts and triggers a targeted Schedule Agent repair against the latest shared state.
+CALLSHEET ZERO is a film-production recovery system where three Mozaik agents react concurrently to the same disruption. Their individually sensible proposals can collide over shared actors, cameras and vehicles. A deterministic Constraint Guard detects exact conflicts, refuses to commit an impossible revision, and triggers a targeted Schedule Agent repair against the latest shared state.
 
-Judge memory sentence:
+Updated judge memory framing:
 
-> Three agents make good decisions at the same time. CALLSHEET ZERO catches when those decisions collide — and repairs the plan live.
+> Parallel decisions are easy. CALLSHEET ZERO refuses the collisions they create, then repairs the schedule against the world that exists now.
+
+Alternative hook:
+
+> Three agents can all be right locally — and still produce an impossible shoot.
 
 ## Deadline and submission route — current
 
@@ -61,13 +68,16 @@ G1_LIVE_MOZAIK_RUN = PASS
 G1B_THREE_AGENT_CONCURRENCY = PASS
 G2_CONSTRAINT_REPAIR = PASS
 CANONICAL_CONFLICTS = lead_actor,camera_a,van_1
+REVISION_01_COMMIT_DECISION = REFUSED_DERIVED_FROM_HARD_CONFLICTS
 REPAIR_EVENT = repair.requested
 REPAIR_AGENT = Schedule Agent
 REPAIR_VERSION = 2
 REPAIRED_SCENE = S22 @ 18:00
+REVISION_02_COMMIT_DECISION = ALLOWED
 FINAL_PLAN_CONFLICT_FREE = TRUE
 DETERMINISTIC_FALLBACK_USED = FALSE
 PRODUCTION = https://callsheet-zero.vercel.app
+RAW_RECEIPT = https://callsheet-zero.vercel.app/evidence/canonical-run.json
 ```
 
 Live/replay truth boundary:
@@ -78,13 +88,13 @@ VERIFIED REPLAY = captured canonical live evidence, no new model call
 SIMULATION = explicitly labeled preview
 ```
 
-Never blur those three states.
+Never blur those three states. `COMMIT REFUSED` is a deterministic decision-layer interpretation of the three verified hard conflicts, not a fabricated Mozaik semantic event.
 
 ## Sponsor roles
 
 ```text
 Mozaik = load-bearing concurrent runtime
-Constraint Guard = deterministic operational safety
+Constraint Guard = deterministic operational safety / commit authority
 Adaption = asynchronous secondary learning layer
 ```
 
@@ -144,14 +154,12 @@ Protected differentiation versus OpsRoom/general workflow systems:
 1. domain-specific film-production call-sheet revision;
 2. locally sensible decisions visibly collide over exact scarce resources;
 3. deterministic Guard checks hard constraints instead of asking another LLM to judge them;
-4. targeted `repair.requested` to Schedule Agent only;
-5. verified replay preserves truth while making the judge path deterministic;
-6. Warm Production Operations UI makes the system look like a real production revision instrument;
-7. Adaption is an additional asynchronous preference-data layer.
-
-A useful demo line if needed:
-
-> Three agents are enough to create the failure mode: concurrent local optima collide on shared production resources.
+4. unsafe Revision 01 is explicitly refused;
+5. targeted `repair.requested` to Schedule Agent only;
+6. verified replay preserves truth while making the judge path deterministic;
+7. Warm Production Operations UI makes the system look like a real production revision instrument;
+8. machine-readable proof receipt lets a skeptical judge inspect the proof chain;
+9. Adaption is an additional asynchronous preference-data layer.
 
 ### Late-stage tooling signal
 
@@ -192,9 +200,9 @@ Claimswarm
 Key field findings:
 
 1. **Incident/security/devtools are crowded.** CALLSHEET ZERO's film-production scheduling domain is genuinely differentiated.
-2. **Deterministic guards are not unique.** ProofGate, OpsRoom, BountyProof and others use attestors, arbiters, interception or human gates. The Guard alone must never be sold as the differentiator.
+2. **Deterministic guards are not unique.** The Guard alone must never be sold as the differentiator.
 3. **Parallel evidence investigation is the dominant concurrency pattern.** CALLSHEET ZERO has a stronger causal story: concurrency itself creates locally sensible decisions that collide over scarce shared resources.
-4. **Concurrency proof is becoming table stakes.** Several strong entries expose timing/overlap evidence. Our existing `all three initial loops started before any completed` proof must be surfaced in the demo.
+4. **Concurrency proof is becoming table stakes.** Our existing `all three initial loops started before any completed` proof must be surfaced in the demo.
 5. **Dark AI dashboards dominate the gallery.** TRACE's Warm Production Operations direction is strategically valuable and should be preserved.
 
 Protected CALLSHEET ZERO edge after scan:
@@ -202,16 +210,14 @@ Protected CALLSHEET ZERO edge after scan:
 ```text
 FILM PRODUCTION DOMAIN
 + CONCURRENCY-CREATED RESOURCE COLLISIONS
++ REV 01 COMMIT REFUSED
 + EXACT HARD CONSTRAINT RECEIPTS
 + TARGETED REPAIR TO ONE AGENT
 + VERIFIED REAL OVERLAP
 + TRUTHFUL REPLAY
++ MACHINE-READABLE PROOF RECEIPT
 + DOMAIN-NATIVE WARM PRODUCTION UI
 ```
-
-Winner Intelligence delta:
-
-> Parallel decisions are easy. Repairing the collisions they create is the product.
 
 Do not add agents, a human gate, extra sponsors, or a generic incident layer in response to the field.
 
@@ -219,11 +225,57 @@ Full scan: `docs/GALLERY_SCAN_2026-09-06.md`.
 
 ## Winner Intelligence state
 
+### G4A — original audit
+
 G4A passed. Core recommendation was Failure-as-Feature + deterministic verified repair replay so the final demo does not depend on stochastic model output.
 
 G4B is implemented and deployed. The existing live run path remains untouched. `Replay verified repair` is clearly labeled and reconstructs captured evidence only.
 
-The current competitor signal reinforces — rather than changes — the Winner Intelligence strategy: win on mechanism legibility and domain specificity, not number of agents.
+### G4A2 — updated Repeat-Winner Intelligence delta
+
+Winner Intelligence was upgraded on 2026-09-06 with Repeat-Winner Pattern Intelligence v1.1, multi-builder pattern selection, Drey + Cruzer mechanisms, discovery-only repeat-winner network intelligence and guarded cross-winner hypotheses.
+
+Applied project delta:
+
+```text
+TOP = CONSTRAINT_GUARD_REFUSAL_AS_HERO_STATE
+SECOND = RECEIPTS_TRAVEL_WITH_EACH_CONSEQUENTIAL_TRANSITION
+THIRD = ONE_COMPLETE_VERTICAL_SLICE_OVER_BREADTH
+NETWORK_DISCOVERY = NO_PROJECT_ACTION
+CROSS_WINNER_CANDIDATES = RESEARCH_ONLY
+WINNING_LAWS_PROMOTED = 0
+SCOPE_REOPEN = NO
+```
+
+The UI now visibly transitions:
+
+```text
+REV 01 · COMMIT REFUSED
+→ 3 hard holds
+→ repair.requested
+→ REV 02 · S22 @ 18:00
+→ 0 final conflicts
+→ COMMIT ALLOWED
+```
+
+The proof strip now carries timing/count receipts adjacent to each consequential transition.
+
+Evidence: `docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md`.
+
+## Hidden-spot integration pass
+
+High-ROI integrations were applied without adding runtime dependencies:
+
+1. public machine-readable canonical receipt at `/evidence/canonical-run.json`;
+2. four Mozaik Cloud loop IDs bound into that receipt;
+3. exact conflict/repair/commit timestamps bound into the receipt;
+4. Adaption dataset/run status carried as **secondary** learning proof with explicit claim boundary;
+5. raw receipt + canonical evidence links surfaced in-product;
+6. `aria-live` added to status and commit-gate state changes.
+
+No Mem0 integration, extra agent, human gate or incident abstraction was added because each would dilute the signature proof under the deadline.
+
+Evidence: `docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md`.
 
 ## TRACE Design state
 
@@ -235,6 +287,8 @@ Current Gate:
 TRACE_GATE = 6.5 — Evaluation Capture
 VERDICT = HOLD_CURRENT_PRODUCTION_CAPTURE
 ```
+
+TRACE canonical state has been updated after G4A2 and an immutable history snapshot was appended.
 
 ### Four mandatory evaluator problems — none may be dropped
 
@@ -270,14 +324,15 @@ Goal:
 
 > Make CALLSHEET ZERO feel like a production revision instrument, not an AI dashboard.
 
-Current deployed implementation:
+Current deployed judge-path implementation:
 
 ```text
-UI_REWORK_COMMIT = 5cd20402468a0a94caa159eab5a7daa5a29f8c5e
-DEPLOYED_COMMIT = 1d0005ef83b7377d9bc24997fb58aa207b5abc1f
-PRODUCTION_DEPLOYMENT = dpl_BLVYRvjE6aybdm4dXwTNzuB7Z3Yb
+UI_BASE_REWORK_COMMIT = 5cd20402468a0a94caa159eab5a7daa5a29f8c5e
+JUDGE_PATH_DELTA_COMMIT = 4e58551249f36b26cb263c7dc9ee3d2f1dce9e88
+PRODUCTION_DEPLOYMENT = dpl_NJUGC4RB4r1JYEXRnVg1w3Hpbboe
 PRODUCTION_HTTP = PASS_200
-CI = PASS_RUN_34015995831
+RAW_RECEIPT_HTTP = PASS_200
+LAST_VERIFIED_CI = PASS_RUN_34015995831
 ```
 
 Approved palette:
@@ -296,9 +351,9 @@ resolved  #2F6B4C
 replay    #536A82
 ```
 
-Implemented domain-native signatures:
-1. Canonical Verified Run Evidence Strip
-2. Constraint Guard Hold Receipts
+Current signature budget remains three mechanisms, not expanded:
+1. Canonical Verified Run Evidence Strip + direct receipts
+2. Constraint Guard Hold Receipts + Commit Gate
 3. REVISION 02 · CONFLICT-FREE approval stamp
 
 Removed/rejected visual defaults:
@@ -321,9 +376,12 @@ VIDEO_SAFE_1280x720_CAPTURE = PENDING
 MOBILE_390x844_CAPTURE = PENDING
 REDUCED_MOTION_CAPTURE_OR_DIRECT_VERIFY = PENDING
 LIVE_REPLAY_SIMULATION_TRUTH_BOUNDARY = PASS
+REVISION_01_COMMIT_REFUSED_VISIBLE = PASS_SOURCE_LEVEL
 CANONICAL_CONFLICTS_VISIBLE = lead_actor,camera_a,van_1
 REVISION_02_AT_18_00_VISIBLE = TRUE_SOURCE_LEVEL
+REVISION_02_COMMIT_ALLOWED_VISIBLE = TRUE_SOURCE_LEVEL
 FINAL_CONFLICT_FREE_VISIBLE = TRUE_SOURCE_LEVEL
+MACHINE_READABLE_RECEIPT = PASS_HTTP_200
 ```
 
 ## Exact next action
