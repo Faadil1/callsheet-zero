@@ -29,6 +29,11 @@ function controls(){
  $('replayBtn').disabled=busy;$('runBtn').disabled=busy;
  document.querySelectorAll('[data-step]').forEach(el=>{el.disabled=busy;el.removeAttribute('aria-current');if(Number(el.dataset.step)===step&&['snapshot','replay'].includes(mode))el.setAttribute('aria-current','step');});
 }
+function liveButton(active){
+ const button=$('runBtn');
+ button.setAttribute('aria-busy',String(active));
+ button.innerHTML=active?'Running live…':'Run live <img src="/ui/arrow-right.svg" alt="">';
+}
 function showStep(next,{announce=true,reveal=false}={}){
  step=Math.max(0,Math.min(4,next));
  const initial=canonical.proposals.filter(p=>p.version===1);
@@ -66,34 +71,41 @@ $('reduceMotion').addEventListener('change',reduceMotion);motionPreference.addEv
 function renderRun(result){
  mode=result.mode==='live'?'live':'simulation';
  const isLive=mode==='live',prefix=isLive?'LIVE':'SIMULATION';
- const events=result.timeline||[],conflicts=result.conflicts||[],final=result.finalPlan||[];
+ const events=result.timeline||[],conflicts=result.conflicts||[],final=result.finalPlan||[],proposals=result.proposals||[];
  const committed=result.status==='complete'&&final.length>0&&events.some(e=>e.kind==='commit'||e.kind==='commit.complete');
+ const concurrencyOk=Boolean(result.concurrencyProof?.allStartedBeforeFirstCompleted);
+ const repaired=final.find(p=>p.version>1);
  const revisions=final.map(p=>Number(p.version)||1),rev=String(Math.max(1,...revisions)).padStart(2,'0');
  $('revisionNumber').textContent=committed?rev:'—';$('sourceLabel').textContent='Execution';$('sourceDate').textContent=prefix;$('sourceNote').textContent=isLive?'Fresh model run':'Preview only';
  $('beforeProvenance').textContent=prefix+' · current run';$('afterProvenance').textContent=prefix+' · current run';
  decision('before','RUN HISTORY',conflicts.length?'HOLDS DETECTED':'NO HOLDS RECORDED',`${conflicts.length} historical holds in this run`,conflicts.length?'refused':'pending');
- // Engine proposals can contain only latest versions. Never fabricate v1 from final rows.
- $('beforeRows').innerHTML='<tr><td class="empty-cell" colspan="5">Initial revision not reconstructed.<br>Inspect this run’s receipts below.</td></tr>';
+ const canShowInitial=proposals.length>0&&!repaired&&proposals.every(p=>Number(p.version)===1);
+ $('beforeRows').innerHTML=canShowInitial?rows(proposals,{conflicts,phase:'before'}):'<tr><td class="empty-cell" colspan="5">Initial revision not reconstructed.<br>Inspect this run’s receipts below.</td></tr>';
  $('holds').innerHTML=conflicts.length?'<strong>Historical resources:</strong><code>'+escape([...new Set(conflicts.map(c=>c.resource))].join(' · '))+'</code>':'No historical resource hold recorded.';
  decision('after',committed?'REV '+rev:'CURRENT RUN',committed?(isLive?'COMMIT ALLOWED':'PREVIEW COMMITTED'):'NO COMMIT RECEIPT',committed?'0 final conflicts':'Final state not verified',committed?'':'pending');
  $('afterRows').innerHTML=rows(final,{phase:'after',committed});
- const repaired=final.find(p=>p.version>1);
- $('changeTitle').textContent=committed?(repaired?`${repaired.sceneId} · ${repaired.start}`:'Plan committed.'):'No decision yet.';
- $('changeNote').textContent=result.note|| (repaired?'Revised proposal from this run.':'No targeted repair recorded.');
+ $('changeTitle').textContent=committed?(repaired?`${repaired.sceneId} · ${repaired.start}`:'Committed without repair.'):'No decision yet.';
+ $('changeNote').textContent=result.note||(repaired?'Revised proposal from this run.':committed?'Fresh live proposals were already conflict-free; no targeted repair was needed.':'No targeted repair recorded.');
  $('viewMode').textContent=prefix+' RESULT';$('viewSource').textContent=isLive?'Fresh execution · current receipts':'Explicit preview · not live evidence';
  $('concurrency').textContent=(isLive?'':'SIMULATION · ')+(result.concurrencyProof?.explanation||'Concurrency proof unavailable.');
- $('starts').innerHTML='';$('modeExplanation').textContent=(result.note||'')+' Replay verified repair returns to the canonical captured evidence.';
- receipts(events);status(prefix+' COMPLETE · '+(committed?'Committed result received.':'No commit receipt; inspect the run.')+(result.note?' '+result.note:''));
+ const starts=Object.entries(result.concurrencyProof?.agentInferenceStarts||{});
+ $('starts').innerHTML=starts.map(([name,iso])=>`<div><dt>${escape(String(iso).slice(11,23))} UTC</dt><dd>${escape(name)} started</dd></div>`).join('');
+ $('modeExplanation').textContent=(result.note||'')+(result.note?' ':'')+'Replay verified repair returns to the canonical captured evidence.';
+ receipts(events);
+ const outcome=committed?'COMMIT ALLOWED':'No commit receipt';
+ const overlap=concurrencyOk?'3 agents overlapped · ':'';
+ status(`${prefix} COMPLETE · ${overlap}${conflicts.length} historical hold${conflicts.length===1?'':'s'} · ${outcome}.${repaired?' Targeted repair recorded.':committed?' No repair required.':''}`);
 }
 $('runBtn').addEventListener('click',async()=>{
- if(busy)return;stop();busy=true;mode='live';controls();
- $('revisionNumber').textContent='—';$('sourceLabel').textContent='Execution';$('sourceDate').textContent='PENDING';$('sourceNote').textContent='Fresh run requested';
- $('viewMode').textContent='RUN REQUESTED';$('viewSource').textContent='Waiting for current run receipts';
- decision('before','CURRENT RUN','AGENTS REQUESTED','Waiting for runtime response');decision('after','CURRENT RUN','NOT COMMITTED','Waiting for Constraint Guard');
- $('beforeRows').innerHTML=rows([]);$('afterRows').innerHTML=rows([]);$('beforeProvenance').textContent='New execution requested';$('afterProvenance').textContent='No decision yet';
- $('holds').textContent='No receipts received.';$('changeTitle').textContent='Production is responding.';$('changeNote').textContent='Waiting for runtime response.';$('concurrency').textContent='Waiting for inference receipts.';$('starts').innerHTML='';receipts([]);status('RUN REQUESTED · Three agents are responding to the disruption.');
+ if(busy)return;stop();busy=true;mode='live';liveButton(true);controls();
+ $('revisionNumber').textContent='—';$('sourceLabel').textContent='Execution';$('sourceDate').textContent='LIVE';$('sourceNote').textContent='Mozaik agents running';
+ $('viewMode').textContent='LIVE RUNNING';$('viewSource').textContent='Waiting for current Mozaik receipts';
+ decision('before','CURRENT RUN','AGENTS RUNNING','Fresh model execution in progress');decision('after','CURRENT RUN','NOT COMMITTED','Waiting for Constraint Guard');
+ $('beforeRows').innerHTML=rows([]);$('afterRows').innerHTML=rows([]);$('beforeProvenance').textContent='New live execution';$('afterProvenance').textContent='No decision yet';
+ $('holds').textContent='No receipts received yet.';$('changeTitle').textContent='Three agents are running.';$('changeNote').textContent='Waiting for the fresh Mozaik execution to return current receipts.';$('concurrency').textContent='Live inference is in progress.';$('starts').innerHTML='';receipts([]);status('LIVE RUNNING · Three Mozaik agents are responding. A fresh model run can take several seconds.');
  try{const response=await fetch('/api/run',{method:'POST',headers:{'content-type':'application/json'},body:'{}'});const data=await response.json();if(!response.ok)throw new Error(data.message||data.error||'Run failed');renderRun(data);}
  catch(error){mode='error';decision('after','CURRENT RUN','NO DECISION','Run failed before a verified commit');$('viewMode').textContent='RUN FAILED';$('viewSource').textContent='No verified result';$('sourceDate').textContent='FAILED';$('sourceNote').textContent='Replay remains available';$('changeTitle').textContent='No result committed.';$('changeNote').textContent='Replay verified evidence or retry the live run.';status('RUN FAILED · '+error.message,true);}
- finally{busy=false;controls();}
+ finally{busy=false;liveButton(false);controls();}
 });
+liveButton(false);
 showStep(4,{announce:false});
