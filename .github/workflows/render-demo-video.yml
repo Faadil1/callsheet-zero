@@ -1,0 +1,39 @@
+name: Render CALLSHEET ZERO demo video
+on:
+  workflow_dispatch:
+  push:
+    paths: ["src/video/**", "evidence/canonical-run.json", ".github/workflows/render-demo-video.yml"]
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm}
+      - run: npm ci
+      - run: npx remotion browser ensure
+      - run: mkdir -p out logs
+      - name: Render
+        id: render
+        run: npx remotion render src/video/index.ts CallsheetZeroDemo out/CALLSHEET_ZERO_DEMO_1080P.mp4 --log=verbose 2>&1 | tee logs/remotion-render.log
+      - name: Verify output
+        if: success()
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate,codec_type -of json out/CALLSHEET_ZERO_DEMO_1080P.mp4 | tee out/render-metadata.json
+          node - <<'NODE'
+          const fs=require('fs'); const x=JSON.parse(fs.readFileSync('out/render-metadata.json')); const v=x.streams.find(s=>s.codec_type==='video'), a=x.streams.find(s=>s.codec_type==='audio');
+          if(!v||v.width!==1920||v.height!==1080||v.codec_name!=='h264'||v.r_frame_rate!=='30/1'||!a) process.exit(1);
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: callsheet-zero-demo-video
+          path: out/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: callsheet-zero-render-logs
+          path: logs/
+          if-no-files-found: warn
