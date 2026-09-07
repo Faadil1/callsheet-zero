@@ -13,7 +13,8 @@
     "adaption:estimate": "tsx scripts/adaption-learning.ts --estimate",
     "adaption:run": "tsx scripts/adaption-learning.ts --run",
     "adaption:estimate:seed": "tsx scripts/adaption-learning.ts --estimate --input-jsonl=data/adaption/verified-repair-seed.jsonl",
-    "adaption:run:seed": "tsx scripts/adaption-learning.ts --run --input-jsonl=data/adaption/verified-repair-seed.jsonl"
+    "adaption:run:seed": "tsx scripts/adaption-learning.ts --run --input-jsonl=data/adaption/verified-repair-seed.jsonl",
+    "test:ui": "node --test tests/continuity.test.mjs"
   },
   "engines": {
     "node": "22.x"
@@ -24,6 +25,7 @@
     "dotenv": "^17.4.2"
   },
   "devDependencies": {
+    "jsdom": "^30.0.1",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   }
