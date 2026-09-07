@@ -1,6 +1,6 @@
 # CALLSHEET ZERO — Current Handover
 
-Updated: 2026-09-07T03:08:00Z
+Updated: 2026-09-07T04:11:00Z
 Purpose: durable resume point for the next conversation/agent. Read this before reconstructing context.
 
 ## Current status in one screen
@@ -20,13 +20,18 @@ REPAIR = repair.requested → Schedule Agent
 REV 02 = S22 @ 18:00
 FINAL CONFLICTS = 0
 REV 02 = COMMIT ALLOWED
-ADAPTION ASYNC INTEGRATION = PROVED
 
-CONTINUITY DESK PR #1 = MERGED
-MERGE COMMIT = a00fcb1101349644890209bf16493b59b4c97396
-PRODUCTION DEPLOYMENT = dpl_9dMSYty8HyBURS2cxrhc9P1qT5mt
-POST-MERGE CI = PASS_RUN_34078433633
-PRODUCTION HTTP = PASS_200
+LIVE RUN UI HOTFIX = PASS
+LIVE HOTFIX COMMIT = 07fbcd8a23b81e1a2c0e44db1cd21f9f7a8bcc6b
+LIVE DIRECT PRODUCTION CHECK = PASS
+LIVE 0-CONFLICT OUTCOME = VALID STOCHASTIC RESULT
+
+ADAPTION ASYNC INTEGRATION = PROVED
+ADAPTION LEARNING RECEIPT = DEPLOYED SECONDARY
+ADAPTION UI COMMIT = 65eca2740905e9cabf3f1ffaae6eacb1380b6d4b
+ADAPTION UI DEPLOYMENT = dpl_6a3Q5psYxePjXdKPH29Se4ukTYdY
+ADAPTION UI CI = PASS_RUN_34082062916
+ADAPTION REALTIME DEPENDENCY = FALSE
 
 TRACE GATE 6.5 = PASS
 NEXT EXACT GATE = TRACE 6.75 — DEMO NARRATIVE / EVIDENCE FILM
@@ -39,10 +44,11 @@ NEXT EXACT GATE = TRACE 6.75 — DEMO NARRATIVE / EVIDENCE FILM
 3. `design-qa.md` — Continuity Desk local design/build QA, viewports and limitations.
 4. `docs/EVIDENCE_G1_G2.md` — canonical live Mozaik proof.
 5. `evidence/canonical-run.json` — machine-readable receipt and Mozaik loop provenance.
-6. `docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md` — current judge-path strategy.
-7. `docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md` — evidence/provenance integrations.
-8. `docs/GALLERY_SCAN_2026-09-06.md` — bounded competitor map.
-9. TRACE state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
+6. `docs/EVIDENCE_ADAPTION_A1.md` — bounded Adaption proof and claim limits.
+7. `docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md` — current judge-path strategy.
+8. `docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md` — evidence/provenance integrations.
+9. `docs/GALLERY_SCAN_2026-09-06.md` — bounded competitor map.
+10. TRACE state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
 
 ## Product
 
@@ -74,16 +80,17 @@ Rain + lead actor +90 min
 Truth boundary is frozen:
 
 ```text
-LIVE = fresh model execution
+LIVE = fresh model execution; may be conflict-free on its first revision
 VERIFIED REPLAY = captured canonical live evidence, no new model call
 SIMULATION = explicitly labeled preview
+ADAPTION = async learning-data layer after verified repair; not in Run live
 ```
 
 Never blur these states. `COMMIT REFUSED` is derived deterministically from verified hard conflicts; it is not a fabricated Mozaik event.
 
 ## Final UI — Continuity Desk / Direction 3
 
-The selected UI is now production, not preview-only.
+The selected UI is production.
 
 Production visual system:
 - mint `#ACEED1` canvas;
@@ -105,26 +112,46 @@ Primary judge surface:
 - UTC receipt inspection;
 - explicit reduced-motion control.
 
-Important implementation behavior:
-- replay makes **zero** live model calls;
-- reduced-motion replay starts paused;
-- native `prefers-reduced-motion` handling exists;
-- no global Enter shortcut can accidentally start a live run;
-- live result never fabricates initial v1 rows from final state;
-- live result cannot claim `COMMIT ALLOWED` without a commit receipt;
-- model-returned text is escaped before rendering;
-- 8 DOM regression tests pass.
+### Live run behavior
+
+The live path is working in production. The UI hotfix makes the pending state explicit with `Running live…`, `LIVE RUNNING`, and `Mozaik agents running`. A direct production check returned `mode=live`, `status=complete`, and proved all three live inference starts occurred before the first completion.
+
+A live run may legitimately return **0 conflicts** because model behavior is stochastic. If Schedule independently chooses S22 @ 18:00 on revision 1, the Guard can commit without issuing `repair.requested`. This is a valid live outcome, not a runtime failure. Use Verified Replay for the deterministic canonical conflict→repair story.
+
+## Adaption — visible secondary learning receipt
+
+Adaption is now visible in the product as one secondary block below the core evidence surface. It does not change runtime behavior and introduces no new dependency into `Run live`.
+
+The visible block says, in substance:
+
+```text
+VERIFIED REPAIR → PREFERENCE DATA
+1 verified repair · preference_pairs
+chosen + rejected generated
+NOT IN RUN LIVE
+Constraint Guard remains safety authority
+```
+
+Claim boundaries:
+- a bounded real Adaption run succeeded with one output row;
+- the output includes `chosen` and `rejected`;
+- use the phrase **preference data generated from a verified repair**;
+- do not claim this one example proves unsafe→safe learning, because the generated rejected response was also operationally conflict-free;
+- Adaption remains asynchronous and secondary;
+- the deterministic Guard remains realtime safety / commit authority.
+
+Product evidence link: `docs/EVIDENCE_ADAPTION_A1.md`.
 
 ## TRACE Gate 6.5 closure
 
-The four mandatory evaluator issues are closed:
+The four mandatory evaluator issues remain closed:
 
-1. **Judge/video readability — PASS.** Local browser QA documented 1440×900 and 1280×720; at 1280×720 the proof transport ends at ~703.7 px, inside the first screen. Current production serves the same merged tree.
-2. **Domain-native / anti-AI-slop — PASS.** Continuity Desk is an editorial production-revision instrument, not a generic dark AI dashboard. The before/after call-sheet revision is the visual identity.
-3. **Proof above fold — PASS.** Hero, REV comparison and five-step evidence transport are first-screen at video-safe 1280×720 according to the documented viewport QA.
-4. **Reduced motion — PASS by direct behavior verification.** Explicit UI control, native media-query behavior and regression coverage are present. No separate native-OS emulation capture is claimed.
+1. **Judge/video readability — PASS.**
+2. **Domain-native / anti-AI-slop — PASS.**
+3. **Proof above fold — PASS.**
+4. **Reduced motion — PASS by direct behavior verification.**
 
-Remaining quality item is **not a Gate 6.5 blocker**: review the actual final screen recording after video compression during Gate 6.75.
+The Adaption block is below the core evidence area and is explicitly secondary; it does not reopen Gate 6.5. Remaining quality item: review the actual final screen recording after video compression during Gate 6.75.
 
 ## Winner Intelligence / competitive state
 
@@ -142,13 +169,10 @@ FILM PRODUCTION DOMAIN
 + TRUTHFUL REPLAY
 + MACHINE-READABLE PROOF
 + DISTINCT CONTINUITY-DESK VISUAL IDENTITY
++ ASYNC VERIFIED-REPAIR LEARNING RECEIPT
 ```
 
-Do **not** respond to competitors by adding agents, a human gate, Mem0, generic incident-management features, new observability dependencies or additional sponsors. The field is already crowded in incident/security/devtools; domain specificity and causal concurrency are the advantage.
-
-## Adaption
-
-Adaption is secondary and asynchronous only. A bounded real preference-data run succeeded with one output row. Support confirmed Plus with 649 available credits on the matched account. Do not claim a separately itemized 500-credit sponsor bucket unless support explicitly itemizes it later. Do not claim one sample proves unsafe→safe learning.
+Do **not** respond to competitors by adding agents, a human gate, Mem0, generic incident-management features, new observability dependencies or additional sponsors.
 
 ## Exact next sequence
 
@@ -175,7 +199,8 @@ Recommended demo spine:
 50–62s REV 02 · S22 16:30 → 18:00
 62–72s 0 conflicts · COMMIT ALLOWED
 72–82s Mozaik receipt / raw proof
-82–90s optional brief Adaption secondary proof + memory line
+82–88s Adaption learning receipt
+88–90s memory line
 ```
 
 If time is tight, Adaption is the first item to shorten; never shorten the refusal → repair → allowed loop.
