@@ -15,7 +15,10 @@ jobs:
       - run: mkdir -p out logs
       - name: Render
         id: render
-        run: npx remotion render src/video/index.ts CallsheetZeroDemo out/CALLSHEET_ZERO_DEMO_1080P.mp4 --log=verbose 2>&1 | tee logs/remotion-render.log
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx remotion render src/video/index.ts CallsheetZeroDemo out/CALLSHEET_ZERO_DEMO_1080P.mp4 --log=verbose 2>&1 | tee logs/remotion-render.log
       - name: Verify output
         if: success()
         run: |
@@ -37,3 +40,4 @@ jobs:
           name: callsheet-zero-render-logs
           path: logs/
           if-no-files-found: warn
+

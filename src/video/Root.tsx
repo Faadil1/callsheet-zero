@@ -1,11 +1,11 @@
 import React from 'react';
-import {AbsoluteFill, Audio, Composition, interpolate, Sequence, useCurrentFrame, useVideoConfig} from 'remotion';
-import receipt from '../../evidence/canonical-run.json';
+import {AbsoluteFill, Audio, Composition, interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import receipt from '../../evidence/canonical-run.json' with {type: 'json'};
 import './video.css';
 
 const C = {mint:'#ACEED1', ink:'#073D31', paper:'#FCFEFC', red:'#AC263D', green:'#096747'};
 const mono = {fontFamily:'ui-monospace, SFMono-Regular, Consolas, monospace'};
-const narration = 'src/video/narration-master.wav';
+const narration = staticFile('narration-master.wav');
 
 function Frame({children, eyebrow='CONTINUITY DESK', tone=C.ink}:{children:React.ReactNode;eyebrow?:string;tone?:string}){
  const f=useCurrentFrame(); return <AbsoluteFill style={{background:C.mint,color:tone,padding:70}}><div className="top"><span className="wordmark">CALLSHEET ZERO</span><span className="eyebrow">{eyebrow}</span><span style={mono as any}>REV {f<150?'—':'01'}</span></div>{children}<div className="footer">CONCURRENT CONSTRAINT REPAIR · VERIFIED EVIDENCE WALKTHROUGH</div></AbsoluteFill>
@@ -22,3 +22,5 @@ function Adaption(){return <Frame eyebrow="SECONDARY ASYNCHRONOUS LAYER"><Title 
 function Closing(){return <Frame eyebrow="CONTINUITY DESK"><div className="closing"><span className="eyebrow">THE MEMORY HOOK</span><h1>Parallel decisions are easy.</h1><h2>CALLSHEET ZERO refuses the collisions they create — and repairs only what changed.</h2><div className="brand">CALLSHEET ZERO</div><p>Concurrent constraint repair for a world that won't wait.</p><small>callsheet-zero.vercel.app</small></div></Frame>}
 export const Video=()=> <AbsoluteFill><Audio src={narration}/><Sequence from={0} durationInFrames={180}><Desk/></Sequence><Sequence from={180} durationInFrames={300}><Concurrency/></Sequence><Sequence from={480} durationInFrames={390}><Refusal/></Sequence><Sequence from={870} durationInFrames={300}><Repair/></Sequence><Sequence from={1170} durationInFrames={330}><Allowed/></Sequence><Sequence from={1500} durationInFrames={360}><Modes/></Sequence><Sequence from={1860} durationInFrames={360}><Adaption/></Sequence><Sequence from={2220} durationInFrames={630}><Closing/></Sequence></AbsoluteFill>;
 export const RemotionRoot=()=> <Composition id="CallsheetZeroDemo" component={Video} durationInFrames={2850} fps={30} width={1920} height={1080}/>;
+
+
