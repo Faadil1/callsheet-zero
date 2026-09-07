@@ -2,74 +2,80 @@
 
 **Concurrent constraint repair for a world that won't wait.**
 
-CALLSHEET ZERO is a JigJoy × daily.dev × Hyperskill Hackathon 2026 project built on **Mozaik v4**. Three AI agents react independently to the same production disruption while sharing one runtime. Their locally sensible proposals can collide over scarce resources; a deterministic constraint guard catches those collisions and triggers an event-driven repair against the state that exists *now*.
+CALLSHEET ZERO is a JigJoy × daily.dev × Hyperskill Hackathon 2026 project built on **Mozaik v4**. Three AI agents react independently to the same film-production disruption while sharing one runtime. Their locally sensible proposals can collide over scarce actors, cameras and vehicles; a deterministic Constraint Guard refuses to commit an impossible revision and triggers only the targeted repair the live schedule needs.
 
-A second, optional layer uses **Adaption Labs Adaptive Data** asynchronously: completed repair outcomes are converted into model-ready learning examples so future scheduling agents can learn from the difference between candidate repairs while the deterministic guard remains the authority for operational safety.
+> **Parallel decisions are easy. CALLSHEET ZERO refuses the collisions they create, then repairs the schedule against the world that exists now.**
 
-## Judge thesis
+Alternative hook: **Three agents can all be right locally — and still produce an impossible shoot.**
 
-> A normal scheduling agent plans for the world it was given. CALLSHEET ZERO keeps repairing the plan while the world changes — because its agents do not wait for each other.
+## The signature proof
 
-**Judge memory sentence:** Three agents make good decisions at the same time. CALLSHEET ZERO catches when those decisions collide — and repairs the plan live.
+The demo is deliberately one complete vertical slice:
 
-The demo is deliberately small and inspectable:
+```text
+rain + lead actor +90 min
+→ Schedule / Talent / Logistics react concurrently
+→ all 3 initial inference loops start before the first completes
+→ 8.432s verified three-way overlap
+→ REV 01 · COMMIT REFUSED
+→ lead_actor / camera_a / van_1 hard holds
+→ repair.requested → Schedule Agent only
+→ REV 02 · S22 @ 18:00
+→ final conflicts = 0
+→ COMMIT ALLOWED
+```
 
-1. Rain removes an exterior location and the lead actor is delayed 90 minutes.
-2. **Schedule**, **Talent**, and **Logistics** agents all react to the same `message.sent` event.
-3. Mozaik starts their `runLoop()` calls fire-and-forget; semantic events expose the real overlap.
-4. Each agent produces a structured local repair proposal.
-5. The deterministic **Constraint Guard** finds overlapping claims on `lead_actor`, `camera_a`, and `van_1`.
-6. It publishes `repair.requested` to the Schedule Agent.
-7. The Schedule Agent runs a second loop against the updated shared state.
-8. A conflict-free plan is committed.
-9. The completed repair is exported to **Adaption Labs**, which generates a `preference_pairs` artifact asynchronously.
+The important distinction is causal: concurrency is not just used to make three investigations faster. The agents optimize different local objectives against the same changing production world, so their individually sensible decisions can create a globally impossible call sheet.
 
-## Verified live run
-
-A live Anthropic run with `claude-sonnet-4-6` completed successfully on 2026-09-05, both locally and from the Vercel production deployment.
-
-- `mode: live`
-- `status: complete`
-- Three initial agents started inference before any initial inference completed.
-- Three real shared-resource conflicts were detected.
-- The Constraint Guard emitted an event-driven repair request.
-- The Schedule Agent produced version 2 at 18:00.
-- The final call sheet was conflict-free without the deterministic fallback.
-
-The original local evidence measured approximately **8.432 seconds** of three-way overlap. The verified production run measured approximately **4.953 seconds**.
+## Try it
 
 Production: **https://callsheet-zero.vercel.app**
 
-See [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md) for the original live timestamps, Mozaik Cloud loop receipts, conflict list, repair event, and final invariant proof.
+The UI exposes two intentionally different judge paths:
 
-## Live run vs Verified Repair Replay
+- **Run live** → a fresh stochastic Mozaik/model execution.
+- **Replay verified repair** → no new model call; it deterministically walks the receipts from the already-verified canonical live run.
 
-The product exposes two intentionally different judge paths:
+The replay is explicitly labeled **VERIFIED REPLAY** and is never presented as a new live execution.
 
-- **Run disruption** triggers a new live `/api/run` execution. Model decisions are stochastic, so a valid run can occasionally avoid a collision on its first proposals.
-- **Replay verified repair** does **not** call a model. It reconstructs the already-verified receipts from the canonical 2026-09-05 live Mozaik run so the conflict → Guard → targeted repair mechanism can be inspected deterministically.
+Machine-readable canonical receipt:
 
-The replay is explicitly labeled **VERIFIED REPLAY** in-product and is never presented as a new live execution. It exists to surface evidence that has already been proved, not to simulate or fabricate a successful run.
+**https://callsheet-zero.vercel.app/evidence/canonical-run.json**
 
-The replay shows the canonical evidence path:
+The receipt includes the concurrency timing, exact hard holds, targeted repair, final commit, canonical production deployment, direct Mozaik Cloud loop URLs and the secondary Adaption proof boundary.
+
+Canonical evidence notes: [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md).
+
+## Verified live run
+
+A live Anthropic run with `claude-sonnet-4-6` completed successfully on 2026-09-05.
+
+- `mode: live`
+- `status: complete`
+- all three initial agents started before any initial agent completed;
+- local canonical three-way overlap: **8.432 seconds**;
+- verified production overlap: **4.953 seconds**;
+- three shared-resource conflicts: `lead_actor`, `camera_a`, `van_1`;
+- the deterministic Guard emitted `repair.requested` to the Schedule Agent;
+- Schedule Agent version 2 moved S22 to **18:00**;
+- the final call sheet was conflict-free;
+- deterministic fallback was **not** used.
+
+`REV 01 · COMMIT REFUSED` is a deterministic decision-layer interpretation of those verified hard conflicts. It is **not** fabricated as a Mozaik semantic event. The underlying event chain remains `conflict.detected → repair.requested → inference → commit.complete`.
+
+## Why the concurrency is real
+
+Schedule, Talent and Logistics are separate Mozaik participants joined to one runtime. One `message.sent` disruption makes all three handlers eligible, and each starts its own fire-and-forget `runLoop()`. CALLSHEET ZERO records Mozaik's `inference.started` and `inference.completed` semantic events.
+
+The proof condition is:
 
 ```text
-3 initial agents start before any completes
-→ concurrency PROVED
-→ lead_actor + camera_a + van_1 conflicts
-→ repair.requested
-→ Schedule Agent v2
-→ S22 @ 18:00
-→ final conflicts = 0
+max(initial inference starts) < min(initial inference completions)
+17:54:46.853Z < 17:54:55.285Z
+PASS
 ```
 
-Winner Intelligence recommended this split after the human browser smoke test proved the live UI but produced a legitimate zero-conflict first pass. See [`docs/WINNER_INTELLIGENCE_G4A.md`](./docs/WINNER_INTELLIGENCE_G4A.md).
-
-## Why this is genuinely concurrent
-
-This is not a sequential planner → executor → reviewer workflow and not a `Promise.all()` wrapper around unrelated tasks. The three participants are joined to one Mozaik runtime and react independently to the same semantic event. The UI reports the `inference.started` and `inference.completed` timestamps emitted by Mozaik. A run earns **PROVED** when all three initial inference loops start before the first one completes.
-
-Mozaik Cloud independently records every agent loop and runtime event when `MOZAIK_API_KEY` is configured.
+Mozaik Cloud independently recorded the initial loops and targeted repair loop. Direct URLs are included in [`evidence/canonical-run.json`](./evidence/canonical-run.json).
 
 ## Architecture
 
@@ -83,29 +89,47 @@ Production Controller
 │ Talent Agent   ─┼─ concurrent runLoop()       │
 │ Logistics Agent ┘                             │
 │        │                                      │
-│        └────────── model.answer ──────────────┤
+│        └──────── model.answer ────────────────┤
 │                                               │
-│ Constraint Guard                             │
-│   ├─ shared-state conflict detection          │
-│   ├─ repair.requested semantic event          │
-│   └─ commit only if invariants pass           │
+│ Deterministic Constraint Guard                │
+│   ├─ exact shared-resource conflict detection │
+│   ├─ REV 01 commit refused if holds remain    │
+│   ├─ repair.requested → Schedule Agent only   │
+│   └─ REV 02 commits only if invariants pass   │
 └───────────────────────────────────────────────┘
-        │ completed repair outcome
+        │ verified completed repair
         ▼
-┌──────────── Optional async learning ───────────┐
-│ Adaption Labs Adaptive Data                    │
-│   ├─ prompt/completion/context mapping         │
-│   ├─ preference-pair generation                │
-│   └─ future training/evaluation corpus         │
-└────────────────────────────────────────────────┘
-        │ generated candidate rows
-        ▼
-Deterministic post-generation validation
-        │
-        └─ promote only validated rows
+┌──────────── Optional async learning ──────────┐
+│ Adaption Labs Adaptive Data                   │
+│   ├─ verified repair → learning example       │
+│   ├─ preference-pair generation               │
+│   └─ deterministic validation before corpus   │
+└───────────────────────────────────────────────┘
 ```
 
-**Adaption is deliberately not in the real-time path.** Mozaik owns concurrent execution; the deterministic guard owns operational safety; Adaption generates asynchronous learning data from completed repair outcomes. If Adaption is unavailable, the live repair product still works.
+**Mozaik is load-bearing.** Remove the genuinely concurrent shared runtime and the signature collision/repair proof disappears.
+
+**The Constraint Guard is non-LLM by design.** Hard operational invariants should not depend on probabilistic judgment.
+
+**Adaption is secondary and asynchronous.** If Adaption is unavailable, the real-time repair product still works.
+
+## Adaption learning proof
+
+The first bounded Adaption integration completed end-to-end from a verified production repair:
+
+```text
+verified repair
+→ one-row dataset
+→ preference_pairs run
+→ succeeded
+→ chosen + rejected output downloaded
+```
+
+The run used a **1-credit estimate/reservation**. We do not claim the exact billed amount from that alone.
+
+The first generated `rejected` candidate was also conflict-free, so CALLSHEET ZERO does **not** claim that this one example proves unsafe→safe learning. The supported claim is narrower: a verified repair can be converted into preference data end-to-end. Generated rows still require deterministic post-generation validation before corpus promotion.
+
+See [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md) and [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md).
 
 ## Run locally
 
@@ -126,97 +150,50 @@ MOZAIK_MODEL=claude-sonnet-4-6
 MOZAIK_API_KEY=...
 ```
 
-Open `http://localhost:3000` after `npm run dev` to use the product UI.
+Open `http://localhost:3000` after `npm run dev`.
 
-Without a matching model provider credential, the endpoint intentionally returns a clearly labeled **SIMULATION** preview so the product UI remains reviewable. It does **not** claim that preview as live concurrency proof.
+Without a matching provider credential, the endpoint intentionally returns a clearly labeled **SIMULATION** preview. Simulation is never counted as live concurrency evidence.
 
-### CLI demo
-
-```bash
-npm run demo
-npm run demo -- --simulation
-```
-
-## Adaption learning loop
-
-Every `/api/run` response includes a `learningExample` with:
-
-- `prompt`: disruption + baseline + initial schedule proposal + exact guard conflicts,
-- `completion`: accepted version-2 Schedule Agent repair,
-- `context`: peer proposals + concurrency proof,
-- `metadata`: model/mode/learning objective/fallback flags.
-
-Export one example locally without calling Adaption:
+### Adaption commands
 
 ```bash
 npm run adaption:export
-```
-
-Request an estimate only:
-
-```bash
 npm run adaption:estimate
-```
-
-Start a real bounded run only after reviewing the estimate:
-
-```bash
 npm run adaption:run -- --confirm-spend
 ```
 
-The paid path is fail-closed: it refuses to run without explicit confirmation and aborts if the quote exceeds `ADAPTION_MAX_CREDITS` (default `10`). The first verified integration used `training_type=preference_pairs`, `ADAPTION_MAX_ROWS=1`, and completed successfully for an estimated **1 credit**. The resulting one-row JSONL contained generated `chosen` and `rejected` fields and was downloaded successfully.
+The paid path is fail-closed and budget-gated by `ADAPTION_MAX_CREDITS`.
 
-The first generated `rejected` candidate was itself conflict-free, so CALLSHEET ZERO does **not** claim that Adaption independently learned an unsafe→safe transition from this sample. Instead, the proof is that a verified production repair can be turned into preference data end-to-end. Generated rows must still pass deterministic post-generation validation before promotion into a larger corpus.
+## Evidence / design assurance
 
-See [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md) and [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md).
-
-## Mozaik Cloud
-
-```bash
-npx @mozaik-ai/cloud-sdk pair
-```
-
-Or add a project key to `.env`:
-
-```bash
-MOZAIK_API_KEY=pk_...
-```
-
-With `@mozaik-ai/core` 4.x, runtime events flow to Mozaik Cloud automatically.
-
-## Environment variables
-
-| Variable | Purpose |
-| --- | --- |
-| `ANTHROPIC_API_KEY` | Recommended live provider credential |
-| `MOZAIK_MODEL` | Model override; verified with `claude-sonnet-4-6` |
-| `OPENAI_API_KEY` | Optional OpenAI provider credential |
-| `GEMINI_API_KEY` | Optional Gemini provider credential |
-| `MOZAIK_API_KEY` | Mozaik Cloud observability |
-| `ADAPTION_API_KEY` | Optional asynchronous repair-learning pipeline |
-| `ADAPTION_MAX_ROWS` | Maximum rows for one Adaptive Data run; default `1` |
-| `ADAPTION_MAX_CREDITS` | Hard local spend gate; default `10` |
+- [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md) — canonical live concurrency/conflict/repair proof
+- [`evidence/canonical-run.json`](./evidence/canonical-run.json) — machine-readable judge receipt
+- [`docs/EVIDENCE_G3G_UI_SMOKE.md`](./docs/EVIDENCE_G3G_UI_SMOKE.md) — human browser smoke
+- [`docs/WINNER_INTELLIGENCE_G4A.md`](./docs/WINNER_INTELLIGENCE_G4A.md) — original pre-submission audit
+- [`docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md`](./docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md) — updated repeat-winner delta
+- [`docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md`](./docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md) — bounded hidden-spot integration pass
+- [`docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md`](./docs/TRACE_GATE_6_5_UI_UX_REWORK_BRIEF.md) — anti-slop / evaluator UI contract
+- [`docs/GALLERY_SCAN_2026-09-06.md`](./docs/GALLERY_SCAN_2026-09-06.md) — bounded current-submission gallery scan
+- [`docs/STATE.md`](./docs/STATE.md) — canonical current state
+- [`docs/HANDOVER_CURRENT.md`](./docs/HANDOVER_CURRENT.md) — durable resume point
 
 ## Submission checklist
 
-- [x] `@mozaik-ai/core` is a direct runtime dependency
-- [x] Three AI agents run concurrently
-- [x] Shared runtime state is explicit
-- [x] Concurrency receipts are surfaced in-product
-- [x] Deterministic constraints are separate from LLM judgment
-- [x] Event-driven repair exists
-- [x] Live provider key configured and validated
-- [x] Mozaik Cloud paired and receiving live loops
-- [x] Genuine three-agent concurrency proved from runtime timestamps
-- [x] Live conflict → repair → conflict-free commit proved
+- [x] `@mozaik-ai/core` direct runtime dependency
+- [x] Three AI agents genuinely concurrent
+- [x] Shared runtime state explicit
+- [x] Semantic-event concurrency receipts
+- [x] Deterministic hard-constraint authority separate from LLM judgment
+- [x] Event-driven targeted repair
 - [x] Public GitHub repository
-- [x] Live Vercel deployment with production Mozaik run
-- [x] Optional Adaption repair-learning layer implemented and budget-gated
-- [x] First bounded Adaption preference-pair run completed and downloaded
-- [x] Human browser click smoke test
-- [x] Winner Intelligence pre-submission judge-path audit
-- [x] Truthfully labeled Verified Repair Replay added for deterministic evidence surfacing
+- [x] Live Vercel production deployment
+- [x] Canonical live conflict → repair → conflict-free commit proof
+- [x] Truthfully labeled Verified Repair Replay
+- [x] `REV 01 COMMIT REFUSED → REV 02 COMMIT ALLOWED` judge path
+- [x] Public machine-readable canonical receipt
+- [x] Optional bounded Adaption learning proof
+- [x] Winner Intelligence G4A + G4A2 audit
+- [x] TRACE source-level anti-slop / readability rework
+- [ ] TRACE Gate 6.5 final capture verdict
 - [ ] Short demo video
-- [ ] Hackathon submission
-
-See [`PRD.md`](./PRD.md), [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/EVIDENCE_G1_G2.md`](./docs/EVIDENCE_G1_G2.md), [`docs/ADAPTION_LEARNING_LOOP.md`](./docs/ADAPTION_LEARNING_LOOP.md), [`docs/EVIDENCE_ADAPTION_A1.md`](./docs/EVIDENCE_ADAPTION_A1.md), [`docs/EVIDENCE_G3G_UI_SMOKE.md`](./docs/EVIDENCE_G3G_UI_SMOKE.md), [`docs/WINNER_INTELLIGENCE_G4A.md`](./docs/WINNER_INTELLIGENCE_G4A.md), and [`docs/STATE.md`](./docs/STATE.md).
+- [ ] Official hackathon submission
