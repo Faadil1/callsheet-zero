@@ -1,19 +1,19 @@
 # CALLSHEET ZERO — Current Handover
 
-Updated: 2026-09-07T04:11:00Z
-Purpose: durable resume point for the next conversation/agent. Read this before reconstructing context.
+Updated: 2026-09-13T15:18:52Z
+Purpose: durable resume point after the JigJoy × daily.dev × Hyperskill Hackathon 2026 result.
 
 ## Current status in one screen
 
 ```text
 PROJECT = CALLSHEET ZERO
-HUMAN_PROJECT_GO = GRANTED
-SCOPE = FROZEN_FOR_SUBMISSION
-DEADLINE = 2026-09-07 03:00 ET / 09:00 CET
+PROJECT_PHASE = POST_COMPETITION
 PRODUCTION = https://callsheet-zero.vercel.app
+DEMO = https://youtu.be/mTOhPi0W1-w
 RAW_RECEIPT = https://callsheet-zero.vercel.app/evidence/canonical-run.json
 
 MOZAIK LIVE CONCURRENCY = PASS
+CANONICAL THREE-WAY OVERLAP = 8.432 s
 CANONICAL CONFLICTS = lead_actor, camera_a, van_1
 REV 01 = COMMIT REFUSED
 REPAIR = repair.requested → Schedule Agent
@@ -21,198 +21,114 @@ REV 02 = S22 @ 18:00
 FINAL CONFLICTS = 0
 REV 02 = COMMIT ALLOWED
 
-LIVE RUN UI HOTFIX = PASS
-LIVE HOTFIX COMMIT = 07fbcd8a23b81e1a2c0e44db1cd21f9f7a8bcc6b
-LIVE DIRECT PRODUCTION CHECK = PASS
-LIVE 0-CONFLICT OUTCOME = VALID STOCHASTIC RESULT
-
-ADAPTION ASYNC INTEGRATION = PROVED
-ADAPTION LEARNING RECEIPT = DEPLOYED SECONDARY
-ADAPTION UI COMMIT = 65eca2740905e9cabf3f1ffaae6eacb1380b6d4b
-ADAPTION UI DEPLOYMENT = dpl_6a3Q5psYxePjXdKPH29Se4ukTYdY
-ADAPTION UI CI = PASS_RUN_34082062916
-ADAPTION REALTIME DEPENDENCY = FALSE
-
-TRACE GATE 6.5 = PASS
-NEXT EXACT GATE = TRACE 6.75 — DEMO NARRATIVE / EVIDENCE FILM
+OFFICIAL SUBMISSION = DONE
+WINNER ANNOUNCEMENT = 2026-09-13
+OVERALL TOP 5 = NO
+HYPERSKILL PREMIUM = NO
+POSTMORTEM = COMPLETE
 ```
 
 ## Read first
 
-1. `docs/STATE.md` — compact canonical current state.
-2. `docs/EVIDENCE_TRACE_GATE_6_5_PASS.md` — current production UI/UX gate closure.
-3. `design-qa.md` — Continuity Desk local design/build QA, viewports and limitations.
-4. `docs/EVIDENCE_G1_G2.md` — canonical live Mozaik proof.
-5. `evidence/canonical-run.json` — machine-readable receipt and Mozaik loop provenance.
-6. `docs/EVIDENCE_ADAPTION_A1.md` — bounded Adaption proof and claim limits.
-7. `docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md` — current judge-path strategy.
-8. `docs/HIDDEN_SPOT_INTEGRATIONS_G4A2.md` — evidence/provenance integrations.
-9. `docs/GALLERY_SCAN_2026-09-06.md` — bounded competitor map.
-10. TRACE state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
+1. `docs/STATE.md` — canonical current state.
+2. `docs/POSTMORTEM_JIGJOY_HACKATHON_2026.md` — final competition analysis and learning candidates.
+3. `docs/EVIDENCE_G1_G2.md` — canonical live Mozaik proof.
+4. `evidence/canonical-run.json` — machine-readable receipt.
+5. `docs/EVIDENCE_TRACE_GATE_6_5_PASS.md` — design/evaluator assurance.
+6. `docs/EVIDENCE_ADAPTION_A1.md` — bounded Adaption proof.
+7. `docs/WINNER_INTELLIGENCE_G4A2_REPEAT_WINNER_DELTA.md` — pre-result strategy.
+8. TRACE state: `Faadil1/trace-design-workflow/state/projects/callsheet-zero/CURRENT.yaml`.
 
-## Product
+## Outcome
 
-CALLSHEET ZERO is a film-production recovery system. Schedule, Talent and Logistics agents react concurrently in one Mozaik runtime to a weather/cast disruption. Their locally rational proposals can collide over scarce actors, cameras and vehicles. A deterministic Constraint Guard refuses the impossible revision and requests the smallest targeted repair.
+CALLSHEET ZERO was submitted successfully but was not selected for the overall Top 5 or the Hyperskill Premium winners.
 
-Judge memory framing:
+The announced overall ranking was:
 
-> **Parallel decisions are easy. CALLSHEET ZERO refuses the collisions they create, then repairs the schedule against the world that exists now.**
+1. Separation
+2. Metamorph
+3. Watchtower
+4. Butterfly
+5. Hive
 
-Alternate hook:
+No per-project judge scorecard or written reason for CALLSHEET ZERO's ranking was available when the postmortem was written. Do not present inferred causes as official feedback.
+
+## Product that remains worth keeping
+
+CALLSHEET ZERO is a film-production recovery system. Schedule, Talent and Logistics agents react concurrently in one Mozaik runtime to a weather/cast disruption. Their locally rational proposals can collide over scarce actors, cameras and vehicles. A deterministic Constraint Guard refuses an impossible revision and requests the smallest targeted repair.
+
+Canonical product hook:
 
 > **Three agents can all be right locally — and still produce an impossible shoot.**
 
-## Canonical proof
+Canonical proof:
 
 ```text
 Rain + lead actor +90 min
 → Schedule / Talent / Logistics start concurrently
-→ all 3 initial loops started before first completion
-→ verified three-way overlap = 8.432 s
+→ 8.432 s verified three-way overlap
 → 3 hard holds: lead_actor / camera_a / van_1
 → REV 01 · COMMIT REFUSED
 → repair.requested → Schedule Agent only
-→ Schedule Agent REV 02 → S22 @ 18:00
+→ Schedule v2 → S22 @ 18:00
 → final conflicts = 0
 → REV 02 · COMMIT ALLOWED
 ```
 
-Truth boundary is frozen:
+Truth boundary remains frozen:
 
 ```text
-LIVE = fresh model execution; may be conflict-free on its first revision
-VERIFIED REPLAY = captured canonical live evidence, no new model call
+LIVE = fresh model execution; may be conflict-free on first revision
+VERIFIED REPLAY = captured canonical live evidence; no new model call
 SIMULATION = explicitly labeled preview
-ADAPTION = async learning-data layer after verified repair; not in Run live
+ADAPTION = async learning-data layer after verified repair; not realtime safety authority
 ```
 
-Never blur these states. `COMMIT REFUSED` is derived deterministically from verified hard conflicts; it is not a fabricated Mozaik event.
-
-## Final UI — Continuity Desk / Direction 3
-
-The selected UI is production.
-
-Production visual system:
-- mint `#ACEED1` canvas;
-- evergreen `#073D31` ink;
-- paper `#FCFEFC`;
-- semantic refusal red `#AC263D`;
-- semantic safe green `#096747`.
-
-Primary judge surface:
-- hero: **The day holds together.**
-- subline: **Three agents propose. The Guard refuses. One scene moves.**
-- side-by-side REV 01 / REV 02 comparison;
-- REV 01 visibly `COMMIT REFUSED` with 3 historical holds;
-- REV 02 visibly `COMMIT ALLOWED`, 0 conflicts;
-- only Schedule / S22 moves `16:30 → 18:00`;
-- five inspectable replay steps;
-- pause / previous / next;
-- raw receipt access;
-- UTC receipt inspection;
-- explicit reduced-motion control.
-
-### Live run behavior
-
-The live path is working in production. The UI hotfix makes the pending state explicit with `Running live…`, `LIVE RUNNING`, and `Mozaik agents running`. A direct production check returned `mode=live`, `status=complete`, and proved all three live inference starts occurred before the first completion.
-
-A live run may legitimately return **0 conflicts** because model behavior is stochastic. If Schedule independently chooses S22 @ 18:00 on revision 1, the Guard can commit without issuing `repair.requested`. This is a valid live outcome, not a runtime failure. Use Verified Replay for the deterministic canonical conflict→repair story.
-
-## Adaption — visible secondary learning receipt
-
-Adaption is now visible in the product as one secondary block below the core evidence surface. It does not change runtime behavior and introduces no new dependency into `Run live`.
-
-The visible block says, in substance:
+## Postmortem verdict
 
 ```text
-VERIFIED REPAIR → PREFERENCE DATA
-1 verified repair · preference_pairs
-chosen + rejected generated
-NOT IN RUN LIVE
-Constraint Guard remains safety authority
+PROJECT = WORTH_KEEPING
+CORE_ARCHITECTURE = WORTH_REUSING
+DESIGN_DIRECTION = KEEP
+DETERMINISTIC_GUARD_PATTERN = KEEP
+TARGETED_REPAIR_PATTERN = KEEP
+RESULT = NO_PRIZE
+PRIMARY_GAP = CAUSAL_CONCURRENCY_PROOF_DEPTH
+SECONDARY_GAP = MID_DECISION_COORDINATION_DEPTH
+TERTIARY_GAP = DETERMINISTIC_JUDGE_REPRODUCIBILITY
+NEXT_SIMILAR_BUILD = THEOREM_FIRST
 ```
 
-Claim boundaries:
-- a bounded real Adaption run succeeded with one output row;
-- the output includes `chosen` and `rejected`;
-- use the phrase **preference data generated from a verified repair**;
-- do not claim this one example proves unsafe→safe learning, because the generated rejected response was also operationally conflict-free;
-- Adaption remains asynchronous and secondary;
-- the deterministic Guard remains realtime safety / commit authority.
+The key distinction versus the first-place project Separation is not that CALLSHEET ZERO lacked real concurrency. It proved real overlap. The stronger winner proof made concurrency causally indispensable, coordinated while decisions were still in flight, and shipped a controlled architectural ablation showing why the full concurrent mechanism was necessary.
 
-Product evidence link: `docs/EVIDENCE_ADAPTION_A1.md`.
+## Winning Intelligence candidates — not yet universal laws
 
-## TRACE Gate 6.5 closure
+Keep these as candidates pending validation across more competitions:
 
-The four mandatory evaluator issues remain closed:
+- **Causal Concurrency Ablation:** compare sequential, concurrent-without-core-mechanism, and full concurrent architecture.
+- **Concurrency Changes Semantics:** prefer simultaneous state that changes another agent's decision before action closes, not only parallel throughput.
+- **Under-30-Second Reproduction:** core claims should be fast and deterministic to verify, ideally without live credentials.
+- **Selective Intervention:** prove unsafe cases trigger intervention while safe cases do not.
 
-1. **Judge/video readability — PASS.**
-2. **Domain-native / anti-AI-slop — PASS.**
-3. **Proof above fold — PASS.**
-4. **Reduced motion — PASS by direct behavior verification.**
+Immediate process rule:
 
-The Adaption block is below the core evidence area and is explicitly secondary; it does not reopen Gate 6.5. Remaining quality item: review the actual final screen recording after video compression during Gate 6.75.
+- **Terminal Repo Reconciliation:** README, state, handover, deployment, video, checklist and submission status must agree before final lock.
 
-## Winner Intelligence / competitive state
+No new universal Winning Intelligence law has been promoted from this single event.
 
-Winner Intelligence G4A2 is advisory and applied. No winning law was promoted.
+## TRACE status
 
-Current protected edge:
+TRACE Gate 6.5 is formally PASS.
+
+The final demo film was completed and submitted, so Gate 6.75 was completed in practice, but the TRACE repository has not yet been formally reconciled to that terminal state. Do not retroactively claim undocumented gates as formal PASS until that state/history update is intentionally executed.
+
+## Recommended next action
 
 ```text
-FILM PRODUCTION DOMAIN
-+ CONCURRENCY CREATES THE FAILURE MODE
-+ REV 01 REFUSAL AS HERO STATE
-+ EXACT HARD-CONSTRAINT RECEIPTS
-+ TARGETED REPAIR TO ONE AGENT
-+ VERIFIED REAL OVERLAP
-+ TRUTHFUL REPLAY
-+ MACHINE-READABLE PROOF
-+ DISTINCT CONTINUITY-DESK VISUAL IDENTITY
-+ ASYNC VERIFIED-REPAIR LEARNING RECEIPT
+FORMALLY RECONCILE TRACE TERMINAL STATE
+→ review postmortem candidates against other hackathon winners
+→ promote only repeated cross-event patterns
+→ archive CALLSHEET ZERO as a reusable concurrency/guard case study
 ```
 
-Do **not** respond to competitors by adding agents, a human gate, Mem0, generic incident-management features, new observability dependencies or additional sponsors.
-
-## Exact next sequence
-
-```text
-TRACE GATE 6.75 — DEMO NARRATIVE / EVIDENCE FILM
-→ capture one 75–90 sec vertical slice
-→ review video compression / readability
-→ Project Finisher
-→ official submission form
-→ verify gallery card
-→ verify detail URL
-→ verify repo link
-→ verify demo link
-→ preserve returned slug/confirmation
-```
-
-Recommended demo spine:
-
-```text
-0–8s   Hook + film-production disruption
-8–20s  Three agents / real concurrency receipt
-20–38s REV 01 · COMMIT REFUSED + exact 3 hard holds
-38–50s repair.requested → Schedule Agent only
-50–62s REV 02 · S22 16:30 → 18:00
-62–72s 0 conflicts · COMMIT ALLOWED
-72–82s Mozaik receipt / raw proof
-82–88s Adaption learning receipt
-88–90s memory line
-```
-
-If time is tight, Adaption is the first item to shorten; never shorten the refusal → repair → allowed loop.
-
-## Authority boundaries
-
-- Human retains final submission authority.
-- TRACE owns design/evaluator assurance only.
-- Winner Intelligence is advisory only.
-- Project Finisher owns terminal readiness assurance.
-- Product/runtime scope is frozen unless a true blocking defect appears.
-
-## State discipline
-
-At every remaining milestone — final video capture, Gate 6.75 verdict, Project Finisher, submission and post-submission verification — update `docs/STATE.md`, this handover, and TRACE `CURRENT.yaml` + immutable history when TRACE state changes.
+Do not reopen the product merely because it did not place. The useful learning is architectural proof depth, not feature count.
