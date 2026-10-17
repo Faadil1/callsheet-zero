@@ -6,6 +6,7 @@ import type {
   SituationProcessor,
 } from "@mozaik-ai/core"
 import { proposalFormat } from "./schema.js"
+import { InferenceDispatchBudget } from "./inference-budget.js"
 
 export type AgentRole = "schedule" | "talent" | "logistics"
 
@@ -366,6 +367,7 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
   const { initializeRuntime, resolveParticipant, join, sendMessage, sendEvent, runLoop } = defineRuntime<CallsheetState>()
 
   const state = new CallsheetState(scenario)
+  const inferenceBudget = new InferenceDispatchBudget()
   initializeRuntime({ state })
 
   class InitialMessageSpec extends SituationSpecification {
@@ -385,6 +387,7 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
   class InitialProcessor implements SituationProcessor {
     apply({ event, participant }: SituationContext): void {
       if (!(participant instanceof Agent)) return
+      if (!inferenceBudget.claimInitial(participant.getId())) return
       const { message } = event.payload as { message: string }
       const inferenceInput: InferenceInput = {
         model,
@@ -400,6 +403,7 @@ export async function runCallsheetScenario(options: { forceSimulation?: boolean 
   class RepairProcessor implements SituationProcessor {
     apply({ event, participant }: SituationContext): void {
       if (!(participant instanceof Agent)) return
+      if (!inferenceBudget.claimRepair(participant.getId())) return
       const payload = event.payload as { message: string }
       const inferenceInput: InferenceInput = {
         model,
