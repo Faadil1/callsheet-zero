@@ -32,7 +32,7 @@ function controls(){
 function liveButton(active){
  const button=$('runBtn');
  button.setAttribute('aria-busy',String(active));
- button.innerHTML=active?'Running live…':'Run live <img src="/ui/arrow-right.svg" alt="">';
+ button.innerHTML=active?'Running authorized live…':'Operator live <img src="/ui/arrow-right.svg" alt="">';
 }
 function showStep(next,{announce=true,reveal=false}={}){
  step=Math.max(0,Math.min(4,next));
