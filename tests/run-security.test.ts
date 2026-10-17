@@ -7,6 +7,9 @@ const clock = Date.parse("2026-10-17T17:00:00Z")
 const token = "local-test-not-a-real-secret-" + "a".repeat(40)
 const env = {
   CALLSHEET_LIVE_RUNS_ENABLED: "true",
+  MOZAIK_MODEL: "claude-sonnet-4-6",
+  ANTHROPIC_API_KEY: "fake-unit-test-credential",
+  MOZAIK_API_KEY: "fake-unit-test-credential",
   CALLSHEET_RUN_OPERATOR_TOKEN: token,
   CALLSHEET_RUN_AUTH_EXPIRES_AT: new Date(clock + 3 * 60 * 1000).toISOString(),
 }
@@ -31,6 +34,16 @@ test("valid short-lived operator credential authorizes one HTTP request, not a g
   const result = authorizeLiveRun("POST", "Bearer " + token, env, clock)
   assert.equal(result.allowed, true)
   assert.equal(result.status, 200)
+})
+
+test("unapproved model or missing provider runtime is blocked", () => {
+  for (const patch of [
+    { MOZAIK_MODEL: "other-model" },
+    { ANTHROPIC_API_KEY: undefined },
+    { MOZAIK_API_KEY: undefined },
+  ]) {
+    assert.equal(authorizeLiveRun("POST", "Bearer " + token, { ...env, ...patch }, clock).status, 503)
+  }
 })
 
 test("missing or too short configured operator secret fails closed", () => {
