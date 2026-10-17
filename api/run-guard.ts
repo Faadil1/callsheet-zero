@@ -21,6 +21,9 @@ export function authorizeLiveRun(
   if (env.CALLSHEET_LIVE_RUNS_ENABLED !== "true") {
     return { allowed: false, status: 503, code: "live_execution_disabled" }
   }
+  if (env.MOZAIK_MODEL !== "claude-sonnet-4-6" || !env.ANTHROPIC_API_KEY || !env.MOZAIK_API_KEY) {
+    return { allowed: false, status: 503, code: "approved_model_runtime_unavailable" }
+  }
 
   const secret = env.CALLSHEET_RUN_OPERATOR_TOKEN
   const expires = Date.parse(env.CALLSHEET_RUN_AUTH_EXPIRES_AT || "")
