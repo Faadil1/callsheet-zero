@@ -65,3 +65,13 @@ This design comparison is **calibration**, not causal assessment of TRACE policy
 ## Exit conditions
 
 Do not merge this experiment merely because it is prettier. If the candidate obstructs task success, hides the Guard authority, makes the archived outcome look live, or breaks mobile accessibility, reject or repair it. Do not use an imagined screenshot or an archival replay as proof of a new live model run.
+
+## October 18 first actual paired QA + design review (superseded by iteration 02)
+
+Owner actually ran the first experiment HEAD `f1f7a814a08eb153cb738cee6f7cbaf084044b67` in Windows Chromium, with 6/6 browser journeys, 6/6 full-page screenshots, zero horizontal overflow, zero JS exceptions and **zero paid API requests**. Actual screenshots and `paired-qa.json` were uploaded and visually inspected.
+
+**Direct design findings from real screenshots:** Candidate is distinctly domain-native (warm printed shooting ledger, temporal and archival cues, non-SaaS identity), but at **1280×720** its five-step transport was visually pushed below the first fold and at **390×844** the extra operator brief delayed the beginning of REV 01. Control's replay and refusal evidence were more immediately visible, so the candidate is **NOT promoted** despite aesthetic gains. Small footnote typography also warrants separate readability/accessibility review. The original reported `controls.bottom` values from the old runner were **INVALID for first-fold claims** because the browser was auto-scrolled after clicking the receipts summary; screenshots captured the entire page and showed a displaced fixed skip link. Correct the test harness rather than treating negative mobile coordinates as evidence that controls are absent.
+
+**Iteration 02 / new HEAD:** Reorder the transport **before** revision tables on large viewports as already done on mobile, compact the redundant archival brief on mobile, then in the runner blur active focus and reset window scroll to top before collecting bounding rectangles and generating both a viewport crop and a full-page screenshot. Require replay controls and REV 01 refusal inside the real first fold on all three widths, and REV 02 allowed inside it on desktop/jury. `12` image files (6 first-fold + 6 full-page) plus `paired-qa.json` expected only **after owner reruns this new HEAD**.
+
+**Truth status:** iteration 01 LOCAL_CHROMIUM_VERIFIED with visual regression observed; iteration 02 SOURCE_PATCHED / PREVIEW_PENDING / BROWSER_QA_NOT_RUN. No user testing, A/B performance uplift or live agent execution has been proven.
