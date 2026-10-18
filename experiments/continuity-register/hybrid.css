@@ -314,3 +314,19 @@ button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible{
   .steps small{font-size:10.5px;}
   .time,.row-status{overflow-wrap:anywhere;}
 }
+
+/* Do not display the stock explanation advertising Run live in a study
+   whose paid-run control is intentionally absent. Shared JS is unchanged. */
+#modeExplanation{display:none;}
+.archive-method-note{
+  color:#3c5a48;
+  background:#f3f3e9;
+  border-left:3px solid #8a6c49;
+  padding:9px 11px;
+  font-size:13px;
+  line-height:1.5;
+}
+.archive-method-note strong{color:#273e33;}
+@media(max-width:760px){
+  .archive-method-note{font-size:13px;}
+}
