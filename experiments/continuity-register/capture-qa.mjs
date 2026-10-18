@@ -128,7 +128,7 @@ try{
       readability=await page.evaluate(()=>{
         const get=(selector)=>document.querySelector(selector)
         const parsed=(text)=>{
-          const found=text.match(/rgba?\\(([^)]+)\\)/)
+          const found=text.match(/rgba?\(([^)]+)\)/)
           if(!found)throw new Error('Unknown CSS color format: '+text)
           return found[1].split(',').slice(0,3).map(v=>Number(v.trim()))
         }
