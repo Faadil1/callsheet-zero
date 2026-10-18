@@ -57,3 +57,28 @@ Pre-existing B v2 metrics: 1280×720 replay bottom 463 px, REV01 decision top 52
 | Release to main | BLOCKED | Draft PR only, explicit approval after review required |
 
 This experiment must not replace or rewrite historical evidence and must not be promoted as global TRACE Design policy proof just because the C surface has a professional visual character.
+
+## Accessibility refinement — review gate (October 18, 2026)
+
+This patch builds on owner-supplied **v1** A/C Chromium measurements at source SHA `246fe26b3f73450265236495856acb2bd7fefb2f`. Those first-fold and screenshot results do **not** transfer automatically to this refinement HEAD.
+
+### Changes in this review
+
+- Mobile critical text is enlarged: table headers, provenance, first-row roles and statuses, five replay-stage labels/details, archived status and evidence metadata. Some compact labels remain **11–12 px** where the 5-column mobile table requires it; do not claim universally comfortable typography.
+- Metadata text colors are darkened for improved measured contrast over the warm paper background.
+- The candidate's stock JS-provided explanation advertising fresh paid inference is visually replaced with an explicit **archived replay only** source note. The production UI, shared JS, provider routes, and real authorization remain untouched.
+- Original refusal/repair layout and 1280×720 replay comparison are preserved; mobile whitespace is tightened to compensate for larger text.
+
+### Extended zero-provider browser QA
+
+Running the same `node experiments/continuity-register/capture-qa.mjs` on this exact HEAD now also:
+- tests keyboard **Tab → Enter → ArrowRight → Home → End** on replay stages, then completion of all five states;
+- measures WCAG-style luminance **≥4.5:1** on a predeclared sample of critical status text, active stage number, metadata and table labels against their actual computed backgrounds;
+- confirms key rendered fonts meet their predeclared minimum (usually 11–12 px);
+- checks 44×44 CSS-pixel replay-stage targets at **390 px**;
+- probes the **320 px narrow-layout reflow** for document overflow without adding screenshots, in addition to twelve existing 390/1280/1440 captures;
+- validates the visible archived-replay-only note and absence of the live trigger, with **0** model-provider HTTP calls.
+
+**Limitations:** These scoped contrast checks are *not* a site-wide automated WCAG audit. A 320 px viewport is a useful reflow stress proxy but **not** proof of correct 200–400% browser zoom or text-only scaling. Full screen-reader announcements, color vision, zoom, complete keyboard navigation and independent task-time studies remain **REVIEW REQUIRED**. In particular, layout compactness is not worth reducing critical labels below accessible sizes.
+
+**Release truth:** Updated source is on DRAFT PR #5 only; Vercel READY is not proof of browser usability. Do not merge until this exact HEAD produces passing Chromium evidence and human visual review of the new mobile/jury captures.
