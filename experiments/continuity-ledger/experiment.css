@@ -242,3 +242,23 @@ footer{padding:17px 8px;color:#5f6e61;border-top:1px solid #b8c5b9}
  .steps small{font-size:8px}
  .provenance{max-width:120px}
 }
+
+
+/* Review iteration 02: preserve the jury's above-the-fold replay and proof sequence.
+   Keep the interaction transport BEFORE the two revision tables. */
+.work-surface{display:flex;flex-direction:column}
+.work-surface>.transport{
+  order:-1;
+  border-top:0;
+  border-bottom:1px solid #bdcbbd;
+}
+@media(max-width:760px){
+  /* The first mobile screen must not be consumed by a duplicate archive summary. */
+  .operator-brief>div{padding:8px 10px}
+  .operator-brief .context{margin-bottom:4px;line-height:1.2}
+  .operator-brief .foot{display:none}
+  .operator-brief strong{font-size:17px;line-height:1.13}
+  .operator-brief .operator-principal{font-size:22px}
+  .operator-brief .no-fresh{font-size:10px;line-height:1.35}
+  .lab-label{font-size:9px;line-height:1.35}
+}
