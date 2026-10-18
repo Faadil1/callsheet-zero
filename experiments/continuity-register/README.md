@@ -82,3 +82,16 @@ Running the same `node experiments/continuity-register/capture-qa.mjs` on this e
 **Limitations:** These scoped contrast checks are *not* a site-wide automated WCAG audit. A 320 px viewport is a useful reflow stress proxy but **not** proof of correct 200–400% browser zoom or text-only scaling. Full screen-reader announcements, color vision, zoom, complete keyboard navigation and independent task-time studies remain **REVIEW REQUIRED**. In particular, layout compactness is not worth reducing critical labels below accessible sizes.
 
 **Release truth:** Updated source is on DRAFT PR #5 only; Vercel READY is not proof of browser usability. Do not merge until this exact HEAD produces passing Chromium evidence and human visual review of the new mobile/jury captures.
+
+## Zoom, accessibility-tree and independent reviewer preparation — 2026-10-18
+
+New **no-paid-inference** source-only follow-up files:
+- `a11y-reflow-qa.mjs` — Chromium on the unchanged archived C candidate at normal **1280**, **640 CSS-px** and **320 CSS-px** viewports, checks visible controls, table/header/button/link exposure in the Chromium accessibility tree, historical refusal/repair/commit and zero `/api/*` requests. Stores three full-page screenshots plus a structured JSON report.
+- `MANUAL-UX-A11Y-PROTOCOL.md` — human checklist for **actual 200%/400% browser zoom**, Narrator/NVDA navigation, and a two-person counterbalanced A/C task study. Neither is executed by creating the protocol.
+
+Run in the project root after installing Chromium (the previous paired QA still applies):
+
+    node experiments/continuity-register/capture-qa.mjs
+    node experiments/continuity-register/a11y-reflow-qa.mjs
+
+**Truth boundaries:** reflow at 640/320 CSS pixels is a useful WCAG-style narrow-width stress proxy, **not native browser zoom**. A Chromium AX-tree inspection is **not a screen-reader test**. Two reviewers completing timed tasks will be real qualitative evidence, but a sample of two cannot prove statistically significant performance gains. Historic receipts are not new live agent execution. The gate remains `ACTIVE / WAITING_FOR_OWNER_EVIDENCE`, with no production merge or TRACE policy promotion.
