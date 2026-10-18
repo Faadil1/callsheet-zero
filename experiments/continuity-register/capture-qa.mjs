@@ -51,6 +51,8 @@ try{
       assert.equal(await page.locator('#runBtn').isVisible(),false,'Hybrid paid live button must stay hidden')
       assert.match(await page.locator('.identity .eyebrow').textContent(),/ARCHIVED REVISION STUDY/)
       assert.match(await page.locator('#sourceNote').textContent(),/No new model call/)
+      assert.equal(await page.locator('#modeExplanation').isVisible(),false,'Stock paid-live explanation must not be visible in replay-only study')
+      assert.match(await page.locator('.archive-method-note').textContent(),/archived replay only/i,'Archived provenance must be explicit')
     }
     await page.locator('#replayBtn').click()
     assert.match(await page.locator('#status').textContent(),/Paused/i)
