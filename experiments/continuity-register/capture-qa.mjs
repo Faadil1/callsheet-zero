@@ -54,14 +54,21 @@ try{
     }
     await page.locator('#replayBtn').click()
     assert.match(await page.locator('#status').textContent(),/Paused/i)
-    // One replay step must be keyboard-activatable with clear native focus.
-    await page.locator('[data-step="1"]').focus()
+    // Navigate by real keyboard Tab events, not JS focus(). This tests
+    // :focus-visible activation as a keyboard user actually experiences it.
+    await page.locator('#replayBtn').focus()
+    let firstStageFocused=false
+    for(let tab=0;tab<12;tab++){
+      await page.keyboard.press('Tab')
+      firstStageFocused=await page.locator('[data-step="1"]').evaluate(el=>document.activeElement===el)
+      if(firstStageFocused)break
+    }
+    assert.equal(firstStageFocused,true,'Replay stage 1 must be reachable with Tab')
     const focused = await page.locator('[data-step="1"]').evaluate(el=>{
       const css=getComputedStyle(el)
       return {active:document.activeElement===el,outlineStyle:css.outlineStyle,outlineWidth:css.outlineWidth}
     })
-    assert.equal(focused.active,true,'Stage button must accept keyboard focus')
-    assert.notEqual(focused.outlineStyle,'none','Stage button must expose focus outline')
+    assert.notEqual(focused.outlineStyle,'none','Keyboard stage focus must expose a visible outline')
     await page.keyboard.press('Enter')
     assert.equal(await page.locator('#beforeDecision').textContent(),'COMMIT REFUSED')
     await page.locator('[data-step="2"]').click()
