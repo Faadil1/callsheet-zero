@@ -64,22 +64,48 @@ try{
     assert.match(await page.locator('#changeTitle').textContent(),/18:00/)
     await page.locator('.receipts summary').click()
     assert.ok(await page.locator('#receiptList li').count()>=10,'Run receipts must be inspectable')
+    // Receipt clicks scroll the browser down. Normalize to scrollY=0 BEFORE
+    // measuring above-the-fold visibility or taking captures (old metrics were invalid).
+    await page.evaluate(()=>{
+      if(document.activeElement instanceof HTMLElement) document.activeElement.blur()
+      window.scrollTo({top:0,left:0,behavior:'instant'})
+    })
+    await page.waitForTimeout(80)
     const dims=await page.evaluate(()=>{
       const box=(selector)=>{const r=document.querySelector(selector)?.getBoundingClientRect();return r?{top:Math.round(r.top),bottom:Math.round(r.bottom)}:null}
-      return {scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,controls:box('.transport'),before:box('.revision.before'),after:box('.revision.after'),brief:box('.operator-brief')}
+      return {
+        scrollY:Math.round(window.scrollY),
+        scrollWidth:document.documentElement.scrollWidth,
+        clientWidth:document.documentElement.clientWidth,
+        viewportHeight:window.innerHeight,
+        controls:box('.transport'),
+        before:box('.revision.before'),
+        after:box('.revision.after'),
+        beforeDecision:box('#beforeDecision'),
+        afterDecision:box('#afterDecision'),
+        brief:box('.operator-brief')
+      }
     })
+    assert.equal(dims.scrollY,0,'Visual capture must start at document top')
     assert.ok(dims.scrollWidth<=dims.clientWidth+1,arm.name+'/'+screen.name+' horizontal overflow: '+dims.scrollWidth+' > '+dims.clientWidth)
+    assert.ok(dims.controls?.bottom<=screen.height,'Replay controls must fit above the first fold: '+arm.name+'/'+screen.name+' '+dims.controls?.bottom+' > '+screen.height)
+    assert.ok(dims.beforeDecision?.top<screen.height,'Refusal must start within first fold: '+arm.name+'/'+screen.name)
+    if(arm.name==='candidate'){
+      assert.ok(dims.afterDecision?.top<screen.height || screen.name==='mobile','Candidate final Guard decision needs first-fold visibility on desktop/jury')
+    }
     assert.deepEqual(errors,[],arm.name+'/'+screen.name+' JS errors')
     const filename=arm.name+'-'+screen.name+'-final.png'
+    const firstfold=arm.name+'-'+screen.name+'-viewport.png'
+    await page.screenshot({path:resolve(out,firstfold),fullPage:false,animations:'disabled'})
     await page.screenshot({path:resolve(out,filename),fullPage:true,animations:'disabled'})
-    metrics.push({...screen,arm:arm.name,...dims,screenshot:filename,noJsErrors:true})
+    metrics.push({...screen,arm:arm.name,...dims,screenshot:filename,viewportScreenshot:firstfold,noJsErrors:true})
     await context.close()
   }
   assert.equal(apiRuns,0,'Do not call any provider API route')
   const evidence={classification:'BROWSER_LOCAL_REPLAY_QA; NOT LIVE AGENT EXECUTION; NOT CAUSAL TRACE POLICY A/B',capturedRun:'2026-09-05',fixture:'/ui/canonical.js',conditions:'Same immutable fixture and replay JS; visual comparison only; reduced-motion browser.',viewports:screens,providerApiRequests:apiRuns,results:metrics,caveats:['Aesthetic review remains human. No independent TRACE policy A/B proven.','Local QA HTTP server returns 503 to any /api/* route; no vendor credentials read.']}
   await writeFile(resolve(out,'paired-qa.json'),JSON.stringify(evidence,null,2))
-  console.log('PASS — '+metrics.length+' browser journeys, '+metrics.length+' screenshots, 0 paid API calls')
-  for(const m of metrics)console.log(m.arm+'/'+m.name+': overflow-free, transport bottom '+m.controls?.bottom+'px')
+  console.log('PASS — '+metrics.length+' browser journeys, '+(metrics.length*2)+' screenshots, above-fold verified at true scrollY=0, 0 paid API calls')
+  for(const m of metrics)console.log(m.arm+'/'+m.name+': overflow-free, true first fold transport bottom '+m.controls?.bottom+'px / '+m.height+'px')
   console.log('Evidence folder: '+out)
 }finally{
   await browser?.close()
