@@ -32,7 +32,7 @@ function controls(){
 function liveButton(active){
  const button=$('runBtn');
  button.setAttribute('aria-busy',String(active));
- button.innerHTML=active?'Running live…':'Run live <img src="/ui/arrow-right.svg" alt="">';
+ button.innerHTML=active?'Running authorized live…':'Operator live <img src="/ui/arrow-right.svg" alt="">';
 }
 function showStep(next,{announce=true,reveal=false}={}){
  step=Math.max(0,Math.min(4,next));
@@ -103,7 +103,7 @@ $('runBtn').addEventListener('click',async()=>{
  decision('before','CURRENT RUN','AGENTS RUNNING','Fresh model execution in progress');decision('after','CURRENT RUN','NOT COMMITTED','Waiting for Constraint Guard');
  $('beforeRows').innerHTML=rows([]);$('afterRows').innerHTML=rows([]);$('beforeProvenance').textContent='New live execution';$('afterProvenance').textContent='No decision yet';
  $('holds').textContent='No receipts received yet.';$('changeTitle').textContent='Three agents are running.';$('changeNote').textContent='Waiting for the fresh Mozaik execution to return current receipts.';$('concurrency').textContent='Live inference is in progress.';$('starts').innerHTML='';receipts([]);status('LIVE RUNNING · Three Mozaik agents are responding. A fresh model run can take several seconds.');
- try{const response=await fetch('/api/run',{method:'POST',headers:{'content-type':'application/json'},body:'{}'});const data=await response.json();if(!response.ok)throw new Error(data.message||data.error||'Run failed');renderRun(data);}
+ try{const response=await fetch('/api/run',{method:'POST',headers:{'content-type':'application/json'},body:'{}'});const data=await response.json();if(!response.ok){const locked=['live_execution_disabled','live_execution_not_armed','operator_authorization_required'];if(locked.includes(data.error))throw new Error('Live execution is operator-only and currently locked. Verified replay remains available.');throw new Error(data.message||data.error||'Run failed');}renderRun(data);}
  catch(error){mode='error';decision('after','CURRENT RUN','NO DECISION','Run failed before a verified commit');$('viewMode').textContent='RUN FAILED';$('viewSource').textContent='No verified result';$('sourceDate').textContent='FAILED';$('sourceNote').textContent='Replay remains available';$('changeTitle').textContent='No result committed.';$('changeNote').textContent='Replay verified evidence or retry the live run.';status('RUN FAILED · '+error.message,true);}
  finally{busy=false;liveButton(false);controls();}
 });

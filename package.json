@@ -14,7 +14,8 @@
     "adaption:run": "tsx scripts/adaption-learning.ts --run",
     "adaption:estimate:seed": "tsx scripts/adaption-learning.ts --estimate --input-jsonl=data/adaption/verified-repair-seed.jsonl",
     "adaption:run:seed": "tsx scripts/adaption-learning.ts --run --input-jsonl=data/adaption/verified-repair-seed.jsonl",
-    "test:ui": "node --test tests/continuity.test.mjs"
+    "test:ui": "node --test tests/continuity.test.mjs",
+    "test:security": "tsx --test tests/run-security.test.ts"
   },
   "engines": {
     "node": "22.x"
@@ -39,6 +40,3 @@
     "typescript": "^7.0.2"
   }
 }
-
-
-
