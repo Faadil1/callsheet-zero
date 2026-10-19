@@ -53,7 +53,7 @@ hr{border:0;border-top:1px solid #c5d0c4;margin:16px 0}
 <label for="reviewer">Code d'évaluateur (attribué par l'organisateur)</label>
 <select id="reviewer"><option value="R1">R1 — ordre X puis Y</option><option value="R2">R2 — ordre X puis Y</option></select>
 <label class="check"><input type="checkbox" id="agree"> Je comprends qu'il s'agit d'une étude locale de deux interfaces historiques et que mes réponses seront remises uniquement à l'organisateur.</label>
-<p class="hint muted">Quatre questions par version, enregistrement automatique des durées par tâche. Ne rechargez pas cette page avant l'export.</p>
+<p class="hint muted">Quatre questions par version, enregistrement automatique des durées par tâche. Ne rechargez pas cette page avant l'export.</p><p class="hint" id="serverGuard" role="status">Vérification du serveur d'étude local en cours…</p>
 <button id="begin" disabled>Commencer l'évaluation</button>
 </section>
 
@@ -122,14 +122,32 @@ let label=()=>arm===0?'X':'Y';
 function hide(...ids){for(const id of ids)$(id).classList.add('hidden');}
 function show(...ids){for(const id of ids)$(id).classList.remove('hidden');}
 async function getMeta(){
-  try{
-    const r=await fetch('/__trace_study_meta.json',{cache:'no-store'});
-    if(!r.ok)throw Error('metadata unavailable');
-    return await r.json();
-  }catch{return {sourceCommit:'UNKNOWN',server:'LOCAL_SERVER_METADATA_UNAVAILABLE'};}
+  const r=await fetch('/__trace_study_meta.json',{cache:'no-store'});
+  if(!r.ok)throw Error('Métadonnées du serveur indisponibles');
+  const meta=await r.json();
+  if(meta.server!=='LOCAL_STATIC_ONLY')throw Error('Le serveur ne garantit pas le blocage des API');
+  return meta;
 }
-$('agree').addEventListener('change',()=>{$('begin').disabled=!$('agree').checked;});
+let studyServerTrusted=false;
+(async()=>{
+  try{
+    if(!['127.0.0.1','localhost'].includes(location.hostname))throw Error('Adresse non locale');
+    const meta=await getMeta();
+    if(meta.server!=='LOCAL_STATIC_ONLY'||!meta.sourceCommit||meta.sourceCommit==='UNVERIFIED_SHA')throw Error('Serveur non vérifié');
+    studyServerTrusted=true;
+    $('serverGuard').textContent='Serveur local vérifié — routes /api/* bloquées; aucun appel modèle.';
+    $('agree').disabled=false;
+    $('begin').disabled=!$('agree').checked;
+  }catch(e){
+    $('serverGuard').textContent='Évaluation bloquée : veuillez lancer study-server.mjs depuis votre clone Git. '+e.message;
+    $('agree').disabled=true;
+    $('begin').disabled=true;
+  }
+})();
+$('agree').disabled=true;
+$('agree').addEventListener('change',()=>{$('begin').disabled=!(studyServerTrusted&&$('agree').checked);});
 $('begin').addEventListener('click',async()=>{
+  if(!studyServerTrusted){alert('Serveur local bloquant les API non vérifié.');return;}
   $('begin').disabled=true;
   const reviewer=$('reviewer').value;
   report={
