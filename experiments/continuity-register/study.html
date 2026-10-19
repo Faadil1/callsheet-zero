@@ -194,7 +194,7 @@ function prepareTask(){
     if(frame.contentWindow?.location?.pathname!==routes[currentArm()])return;
     isolatePaidButton();
     const live=frame.contentDocument?.getElementById('runBtn');
-    if(live && getComputedStyle(live).display!=='none'){
+    if(!live || getComputedStyle(live).display!=='none'){
       $('readyStatus').textContent='Sécurité non confirmée : intervention requise.';
       return;
     }
