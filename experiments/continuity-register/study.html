@@ -99,6 +99,11 @@ hr{border:0;border-top:1px solid #c5d0c4;margin:16px 0}
 <script>
 "use strict";
 const $=(id)=>document.getElementById(id);
+const assignedReviewer=new URLSearchParams(location.search).get('reviewer');
+if(['R1','R2'].includes(assignedReviewer)){
+  $('reviewer').value=assignedReviewer;
+  $('reviewer').disabled=true; // Assignment comes from the local reviewer URL.
+}
 const tasks=[
   {id:'T1',prompt:'Pourquoi la première révision a-t-elle été bloquée ? Nommez les ressources impliquées.'},
   {id:'T2',prompt:'Quelle scène a changé, de quelle heure à quelle heure, et quel agent a réparé cette proposition ?'},
