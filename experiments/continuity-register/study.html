@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Évaluation de lisibilité — Callsheet Zero</title>
+<style>
+:root{font-family:system-ui,"Segoe UI",Arial,sans-serif;color:#253d32;background:#e8e3d5}
+*{box-sizing:border-box}
+body{margin:0}
+main{max-width:1420px;margin:0 auto;padding:18px clamp(12px,2vw,32px)}
+header{border-top:4px solid #294f3b;border-bottom:1px solid #98ae9b;padding:12px 0;display:flex;gap:20px;justify-content:space-between;align-items:start}
+.brand{font-weight:900;font-size:16px;letter-spacing:.4px}
+.muted{color:#4e6256}
+.hint{font-size:13px;line-height:1.55}
+h1{font:700 clamp(28px,4.2vw,46px)/1.08 Georgia,serif;margin:22px 0 7px}
+h2{font:700 24px/1.2 Georgia,serif;margin:9px 0}
+section.card{background:#fffefa;border:1px solid #b8c7b7;box-shadow:0 5px 22px #263d3010;padding:18px 20px;margin-top:13px;border-radius:4px}
+label{display:block;font-weight:700;margin:10px 0 6px}
+input,textarea,select{font:inherit;border:1px solid #687f6d;background:#fff;width:100%;padding:11px;min-height:44px;border-radius:3px;color:#263e31}
+textarea{min-height:82px;resize:vertical}
+input[type=checkbox]{width:20px;min-height:20px;vertical-align:middle;margin-right:8px}
+label.check{display:flex;align-items:center;gap:5px;font-weight:500}
+button{font:700 15px system-ui,Arial;min-height:44px;padding:12px 19px;border:2px solid #2d5941;background:#2d5941;color:white;cursor:pointer;border-radius:3px}
+button.secondary{color:#294c36;background:transparent}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #a46438;outline-offset:3px}
+.hidden{display:none!important}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1;min-width:160px}
+.small{font-size:12px;color:#526758}
+.tag{font:700 12px/1.1 ui-monospace,Consolas,monospace;display:inline-block;padding:5px 8px;border:1px solid #9fb4a0;color:#375943;background:#edf3eb}
+#taskHeading{margin:5px 0 10px}
+#question{font:700 clamp(17px,2vw,23px)/1.4 Georgia,serif}
+.frame-wrap{position:relative;min-height:550px;margin-top:14px;border:2px solid #647d6c;background:#fff}
+iframe{width:100%;height:min(74vh,780px);min-height:550px;border:0;background:white;display:block}
+#curtain{position:absolute;inset:0;z-index:2;background:#f4efe6;display:flex;align-items:center;justify-content:center;padding:18px}
+#curtain>div{max-width:510px;padding:20px;text-align:center;background:#fffefa;border:1px solid #a8b7a7}
+.ratings{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
+footer{font-size:12px;line-height:1.5;padding:25px 0;color:#516357}
+hr{border:0;border-top:1px solid #c5d0c4;margin:16px 0}
+@media(max-width:600px){.row>*{min-width:100%}section.card{padding:13px}.frame-wrap{min-height:450px}iframe{min-height:450px;height:68vh}}
+</style>
+</head>
+<body>
+<main>
+<header><div><div class="brand">CALLSHEET ZERO <span class="tag">ÉTUDE A / C</span></div><div class="small">Replay historique · aucun appel modèle</div></div><div class="small">Session locale, résultats enregistrés uniquement dans le fichier exporté.</div></header>
+<section id="intro" class="card">
+<h1>Évaluation de compréhension</h1>
+<p>Vous examinerez <strong>deux versions du même incident de production</strong>. Répondez sans aide autant que possible. Les réponses et durées restent sur cet ordinateur jusqu'à votre export JSON. Aucune donnée nominative n'est nécessaire.</p>
+<p>La présentation du système ne représente pas une exécution en direct. Ne cliquez pas sur un contrôle « Operator live » (le kit le masque et son serveur bloque toutes les API).</p>
+<label for="reviewer">Code d'évaluateur (attribué par l'organisateur)</label>
+<select id="reviewer"><option value="R1">R1 — ordre X puis Y</option><option value="R2">R2 — ordre X puis Y</option></select>
+<label class="check"><input type="checkbox" id="agree"> Je comprends qu'il s'agit d'une étude locale de deux interfaces historiques et que mes réponses seront remises uniquement à l'organisateur.</label>
+<p class="hint muted">Quatre questions par version, enregistrement automatique des durées par tâche. Ne rechargez pas cette page avant l'export.</p>
+<button id="begin" disabled>Commencer l'évaluation</button>
+</section>
+
+<section id="study" class="card hidden" aria-live="polite">
+<div class="row"><div><span id="variant" class="tag">Version X</span><h2 id="taskHeading">Tâche 1 sur 4</h2></div><p class="muted hint" id="progress">Version 1 / 2</p></div>
+<p id="question"></p>
+<div id="taskForm" class="hidden">
+<label for="answer">Votre réponse, avec les détails que vous avez trouvés</label>
+<textarea id="answer" placeholder="Écrivez votre réponse ici, sans demander d'indication."></textarea>
+<div class="row">
+<div><label for="mistakes">Clics ou essais erronés (estimation)</label><input type="number" id="mistakes" min="0" max="100" step="1" value="0"></div>
+<div><label class="check" style="margin-top:32px"><input type="checkbox" id="help"> J'ai reçu de l'aide / un indice</label><label class="check"><input type="checkbox" id="unfound"> Je n'ai pas trouvé la réponse</label></div>
+</div>
+<button id="saveTask">Enregistrer cette réponse et continuer</button>
+</div>
+<div class="frame-wrap">
+<iframe title="Version de Callsheet Zero à évaluer" id="appFrame"></iframe>
+<div id="curtain"><div><h2>Prêt pour cette tâche ?</h2><p>L'interface sera révélée au démarrage du chronomètre. Le chrono s'arrête lorsque vous enregistrez la réponse.</p><p id="readyStatus" class="small">Chargement de la version…</p><button id="startTask" disabled>Révéler l'interface et démarrer</button></div></div>
+</div>
+</section>
+
+<section id="feedback" class="card hidden">
+<h2 id="ratingTitle">Votre impression de la Version X</h2>
+<p>Évaluez cette version de 1 (faible) à 5 (excellent), indépendamment de l'autre.</p>
+<div id="ratings" class="ratings"></div>
+<label for="comment">Ce qui était facile, difficile ou ambigu</label>
+<textarea id="comment" placeholder="Avez-vous confondu replay historique et exécution nouvelle ?"></textarea>
+<button id="submitFeedback">Enregistrer cette version</button>
+</section>
+
+<section id="done" class="card hidden">
+<h1>Évaluation terminée</h1>
+<p>Merci. Aucun résultat n'a été envoyé à un serveur. Téléchargez le JSON puis remettez-le à l'organisateur. Les réponses ne sont <strong>pas corrigées automatiquement</strong> : une personne doit vérifier leur exactitude avant de calculer un verdict.</p>
+<label for="favorite">Version préférée (facultatif)</label>
+<select id="favorite"><option value="none">Aucune préférence / indécis</option><option value="X">X</option><option value="Y">Y</option></select>
+<label for="why">Pourquoi ? (facultatif)</label>
+<textarea id="why" placeholder="Lisibilité, identité de production, compréhension, provenance…"></textarea>
+<button id="export">Télécharger mes réponses (.json)</button>
+<p class="small" id="exportStatus" role="status"></p>
+</section>
+<footer>Étude hors ligne · mêmes reçus historiques pour les deux versions · deux évaluateurs R1 puis R2 · sauvegarde locale par téléchargement, aucune collecte réseau · aucun résultat de performance ne doit être déduit avant analyse des fichiers.</footer>
+</main>
+<script>
+"use strict";
+const $=(id)=>document.getElementById(id);
+const tasks=[
+  {id:'T1',prompt:'Pourquoi la première révision a-t-elle été bloquée ? Nommez les ressources impliquées.'},
+  {id:'T2',prompt:'Quelle scène a changé, de quelle heure à quelle heure, et quel agent a réparé cette proposition ?'},
+  {id:'T3',prompt:'Qui autorise ou refuse le commit final ? Quelle condition permet son acceptation ?'},
+  {id:'T4',prompt:'Où trouver le reçu source et sa date ? Est-ce un nouvel appel de modèle ou une preuve archivée ?'}
+];
+const dimensions=[
+  ['identity','Identité propre au domaine du tournage'],
+  ['findability','Facilité de trouver l’information'],
+  ['steps','Compréhension des étapes et décisions'],
+  ['legibility','Lisibilité des textes'],
+  ['mobile','Utilisation sur petit écran (ou « non testé »)'],
+  ['trust','Confiance dans la provenance des preuves']
+];
+const routes={A:'/index.html',C:'/experiments/continuity-register/index.html'};
+const mapping={R1:['A','C'],R2:['C','A']};
+let report,arm=0,task=0,startedAt=0,loaded=false;
+const frame=$('appFrame'),curtain=$('curtain');
+let currentArm=()=>mapping[report.reviewer][arm];
+let label=()=>arm===0?'X':'Y';
+function hide(...ids){for(const id of ids)$(id).classList.add('hidden');}
+function show(...ids){for(const id of ids)$(id).classList.remove('hidden');}
+async function getMeta(){
+  try{
+    const r=await fetch('/__trace_study_meta.json',{cache:'no-store'});
+    if(!r.ok)throw Error('metadata unavailable');
+    return await r.json();
+  }catch{return {sourceCommit:'UNKNOWN',server:'LOCAL_SERVER_METADATA_UNAVAILABLE'};}
+}
+$('agree').addEventListener('change',()=>{$('begin').disabled=!$('agree').checked;});
+$('begin').addEventListener('click',async()=>{
+  $('begin').disabled=true;
+  const reviewer=$('reviewer').value;
+  report={
+    format:'TRACE-CALLSHEET-LOCAL-HUMAN-COMPREHENSION-V1',
+    reviewer,order:mapping[reviewer],startedAt:new Date().toISOString(),
+    metadata:await getMeta(),browser:{userAgent:navigator.userAgent,devicePixelRatio:devicePixelRatio,outerWidth:outerWidth,innerWidth:innerWidth},
+    restrictions:{api:'DENIED_LOCAL',liveButton:'HIDDEN_IN_IFRAME',dataTransfer:'NONE_EXCEPT_USER_JSON_DOWNLOAD'},
+    sessions:[],humanScoring:'NOT_AUTOMATICALLY_SCORED'
+  };
+  arm=0;task=0;hide('intro');show('study');prepareTask();
+});
+function isolatePaidButton(){
+  try{
+    const doc=frame.contentDocument;
+    if(!doc)return;
+    if(!doc.querySelector('#traceStudyBlockedLive')){
+      const rule=doc.createElement('style');
+      rule.id='traceStudyBlockedLive';
+      rule.textContent='#runBtn{display:none!important}';
+      doc.head.appendChild(rule);
+    }
+    const live=doc.querySelector('#runBtn');
+    if(live){live.setAttribute('aria-hidden','true');live.setAttribute('tabindex','-1');live.style.setProperty('display','none','important');}
+  }catch(e){
+    $('readyStatus').textContent='Impossible de sécuriser le bouton live : '+e.message;
+    $('startTask').disabled=true;
+  }
+}
+function prepareTask(){
+  const variant=label();
+  hide('feedback','done');
+  show('study');
+  $('variant').textContent='Version '+variant;
+  $('taskHeading').textContent='Tâche '+(task+1)+' / 4';
+  $('progress').textContent='Version '+(arm+1)+' / 2';
+  $('question').textContent=tasks[task].prompt;
+  hide('taskForm');show('curtain');
+  $('readyStatus').textContent='Chargement de la version…';
+  $('startTask').disabled=true;
+  loaded=false;
+  // Reload on every task, so the initial state is comparable across arms.
+  frame.onload=()=>{
+    isolatePaidButton();
+    const live=frame.contentDocument?.getElementById('runBtn');
+    if(live && getComputedStyle(live).display!=='none'){
+      $('readyStatus').textContent='Sécurité non confirmée : intervention requise.';
+      return;
+    }
+    loaded=true;$('readyStatus').textContent='Version prête. Le chronomètre n’a pas commencé.';
+    $('startTask').disabled=false;
+  };
+  frame.src=routes[currentArm()]+'?reviewerTask='+encodeURIComponent(tasks[task].id)+'&n='+arm;
+}
+$('startTask').addEventListener('click',()=>{
+  if(!loaded || !report)return;
+  startedAt=performance.now();
+  hide('curtain');show('taskForm');
+  $('answer').value='';$('mistakes').value='0';$('help').checked=false;$('unfound').checked=false;
+  frame.focus();
+});
+$('saveTask').addEventListener('click',()=>{
+  const answer=$('answer').value.trim(),unfound=$('unfound').checked;
+  if(!answer&&!unfound){alert('Écrivez une réponse ou cochez « Je n’ai pas trouvé ».');return;}
+  const seconds=Math.max(.1,Math.round((performance.now()-startedAt)/100)/10);
+  const mistakes=Number($('mistakes').value);
+  if(!Number.isInteger(mistakes)||mistakes<0||mistakes>100){alert('Nombre d’essais erronés invalide');return;}
+  const variant=currentArm();
+  let session=report.sessions.find(s=>s.arm===variant);
+  if(!session){
+    session={arm:variant,label:label(),position:arm+1,viewport:{width:frame.clientWidth,height:frame.clientHeight},answers:[],ratings:null};
+    report.sessions.push(session);
+  }
+  session.answers.push({taskId:tasks[task].id,prompt:tasks[task].prompt,answer,unfound,help:$('help').checked,mistakes,elapsedSeconds:seconds,scoring:'NOT_REVIEWED'});
+  task++;
+  if(task<tasks.length){prepareTask();return;}
+  hide('study');show('feedback');
+  $('ratingTitle').textContent='Votre impression de la Version '+label();
+  $('ratings').replaceChildren();
+  for(const [key,caption] of dimensions){
+    const box=document.createElement('div'),lbl=document.createElement('label'),select=document.createElement('select');
+    lbl.htmlFor='rating_'+key;lbl.textContent=caption;
+    select.id='rating_'+key;select.dataset.dimension=key;
+    select.appendChild(new Option('Choisissez une note',''));
+    for(let n=1;n<=5;n++)select.appendChild(new Option(String(n),String(n)));
+    if(key==='mobile')select.appendChild(new Option('Non testé','not_tested'));
+    box.append(lbl,select);$('ratings').appendChild(box);
+  }
+  $('comment').value='';
+});
+$('submitFeedback').addEventListener('click',()=>{
+  const vals={},selects=[...$('ratings').querySelectorAll('select')];
+  for(const el of selects){
+    if(!el.value){alert('Veuillez noter « '+el.previousSibling.textContent+' » ou choisir « Non testé » pour le mobile.');el.focus();return;}
+    vals[el.dataset.dimension]=el.value==='not_tested'?'NOT_TESTED':Number(el.value);
+  }
+  const session=report.sessions.find(s=>s.arm===currentArm());
+  session.ratings=vals;session.comments=$('comment').value.trim();
+  arm++;task=0;
+  if(arm>=2){hide('feedback');show('done');report.completedAt=new Date().toISOString();return;}
+  prepareTask();
+});
+$('export').addEventListener('click',()=>{
+  if(!report||report.sessions.length!==2||report.sessions.some(s=>s.answers.length!==4||!s.ratings)){alert('Étude incomplète');return;}
+  report.favorite=$('favorite').value;
+  report.favoriteWhy=$('why').value.trim();
+  report.exportedAt=new Date().toISOString();
+  const json=JSON.stringify(report,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob),link=document.createElement('a');
+  link.href=url;link.download='TRACE_Callsheet_UX_'+report.reviewer+'.json';link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  $('exportStatus').textContent='Téléchargement lancé : '+link.download+'. Remettez ce fichier à l’organisateur.';
+});
+</script>
+</body>
+</html>
