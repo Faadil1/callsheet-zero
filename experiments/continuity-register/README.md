@@ -95,3 +95,23 @@ Run in the project root after installing Chromium (the previous paired QA still 
     node experiments/continuity-register/a11y-reflow-qa.mjs
 
 **Truth boundaries:** reflow at 640/320 CSS pixels is a useful WCAG-style narrow-width stress proxy, **not native browser zoom**. A Chromium AX-tree inspection is **not a screen-reader test**. Two reviewers completing timed tasks will be real qualitative evidence, but a sample of two cannot prove statistically significant performance gains. Historic receipts are not new live agent execution. The gate remains `ACTIVE / WAITING_FOR_OWNER_EVIDENCE`, with no production merge or TRACE policy promotion.
+
+## Independent two-reviewer study kit (2026-10-19)
+
+**Created — not executed by two humans.** See [REVIEWER-HANDOFF.md](./REVIEWER-HANDOFF.md).
+
+A genuinely blinded, local-only evaluation is implemented in:
+- `study-server.mjs`: localhost-only HTTP server (`127.0.0.1`), **any `/api/*` request returns 503**, static paths allowlisted to both review UIs and historical `/evidence/canonical-run.json`. Prints separate R1 and R2 session URLs.
+- `study.html`: French participant interface, masked **Version X/Y**, automatically assigned **R1 A→C** and **R2 C→A**, four timed factual tasks per arm, free-text answers, help/errors, six dimension scores, optional preference. No data upload. Outputs two local user-triggered JSON downloads. The source commit is recorded via local Git server metadata.
+- The participant UI refuses to start unless a verified `LOCAL_STATIC_ONLY` server is running on 127.0.0.1 or localhost; `#runBtn` must be explicitly hidden before every task; iframe is inert before time starts. No live runs.
+- `study-smoke-qa.mjs`: **synthetic self-test only**, not participant evidence. Verifies two arm orders, 8 tasks × 2 sessions, JSON downloads, source SHA and zero API requests. Needs local Playwright Chromium already installed.
+- `MANUAL-UX-A11Y-PROTOCOL.md`: objective answer key, scoring constraints, two-person exit gate and independence disclosure.
+
+From a clean worktree on the current exact HEAD:
+
+    node experiments/continuity-register/study-smoke-qa.mjs
+    node experiments/continuity-register/study-server.mjs
+
+**Human evidence still required:** collect `TRACE_Callsheet_UX_R1.json` and `TRACE_Callsheet_UX_R2.json` from **two actual people**, evaluate factual correctness blind, mistakes, task time and whether archived provenance was understood. We have not recruited anyone or filled any score. **Do not count the synthetic self-test as human review**, and do not infer statistical significance or policy-causal lift from n=2.
+
+**Status:** source prepared, build preview only; smoke-test script not yet independently run. Previous visual/zoom results remain as previously classified; no production merge is authorized.
