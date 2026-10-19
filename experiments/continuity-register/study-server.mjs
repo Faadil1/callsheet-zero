@@ -33,6 +33,16 @@ const server=createServer(async(req,res)=>{
     }
     let route=decodeURIComponent(url.pathname);
     if(route.endsWith('/'))route+='index.html';
+    // Serve only the historical A/C study surfaces, fixture, and UI assets.
+    // Never expose dotfiles, environment variables, repository metadata or
+    // unrelated source files through the local human-review server.
+    const allowed=route==='/index.html' ||
+      route==='/evidence/canonical-run.json' ||
+      (route.startsWith('/ui/') && /\.(css|js|svg|png|ico)$/.test(route)) ||
+      ['/experiments/continuity-register/index.html',
+       '/experiments/continuity-register/study.html',
+       '/experiments/continuity-register/hybrid.css'].includes(route);
+    if(!allowed){res.writeHead(403,headers);return res.end('Study-only route');}
     const filename=resolve(root,'.'+route);
     if(!filename.startsWith(root+sep)){
       res.writeHead(403,headers);return res.end('Forbidden');
