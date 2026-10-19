@@ -31,7 +31,8 @@ try{
     const page=await context.newPage();
     await page.goto(host+'/experiments/continuity-register/study.html?reviewer='+reviewer,{waitUntil:'load'});
     await page.waitForFunction(()=>document.querySelector('#serverGuard')?.textContent?.includes('vérifié'));
-    await page.locator('#reviewer').selectOption(reviewer);
+    assert.equal(await page.locator('#reviewer').inputValue(),reviewer,'Local reviewer link must pin R1/R2 automatically');
+    assert.equal(await page.locator('#reviewer').isDisabled(),true,'Reviewer allocation cannot be changed after link assignment');
     await page.locator('#agree').check();
     await page.locator('#begin').click();
     const expected=reviewer==='R1'?['A','C']:['C','A'];
