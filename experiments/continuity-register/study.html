@@ -187,9 +187,11 @@ function prepareTask(){
   hide('taskForm');show('curtain');
   $('readyStatus').textContent='Chargement de la version…';
   $('startTask').disabled=true;
+  frame.inert=true; // No interaction before the timer starts.
   loaded=false;
   // Reload on every task, so the initial state is comparable across arms.
   frame.onload=()=>{
+    if(frame.contentWindow?.location?.pathname!==routes[currentArm()])return;
     isolatePaidButton();
     const live=frame.contentDocument?.getElementById('runBtn');
     if(live && getComputedStyle(live).display!=='none'){
@@ -204,6 +206,7 @@ function prepareTask(){
 $('startTask').addEventListener('click',()=>{
   if(!loaded || !report)return;
   startedAt=performance.now();
+  frame.inert=false;
   hide('curtain');show('taskForm');
   $('answer').value='';$('mistakes').value='0';$('help').checked=false;$('unfound').checked=false;
   frame.focus();
